@@ -1,0 +1,348 @@
+
+.wrapper{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.introBox{
+  position: relative;
+  margin-bottom: 15vh;
+  margin-top: 3vh;
+  display: flex;
+  width: 100%;
+  min-height: 75vh;
+}
+
+.introBox .right, .introBox .left, .introSwiper{
+  min-height: inherit;
+}
+.introBox .left{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
+  border-radius: 0 30px 30px 0;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  padding: 0 5%;
+  width: 25%;
+}
+.logo_2{
+  display: none;
+}
+.introBox .left p{
+  font-size: 2.3rem;
+}
+.introBox .left a{
+  background: var(--theme);
+  padding: 5px;
+  color: white;
+  font-size: 1.1rem;
+  border-radius: 5px;
+}
+
+.introBox .right{ 
+  width: 65%;
+  display: flex;
+}
+.introSwiper{
+  min-height: inherit;
+  width: 100%;
+  border-radius: 30px 0 0 30px;
+}
+.introSlide{
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+.introSlide a{
+  background: black;
+  position: relative;
+  background: white;
+  margin-left: 5%;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.introSlide a sub{
+  position: absolute;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  height: 10px;
+  top: 0;
+  right: 0;
+  width: 10px;
+  transition: 0.5s ease;
+  background: var(--theme);
+  border-radius: 50%;
+  z-index: 1;
+}
+.introSlide a:hover sub{
+  scale: 40;
+}
+.introSlide a strong{
+  z-index: 10;
+  transition: 0.5s ease;
+  font-size: 2rem;
+  color: rgb(122, 120, 120);
+}
+.introSlide a:hover strong{
+  color: wheat;
+}
+.introSlide a span{
+  transition: 0.5s ease;
+  z-index: 10;
+  display: flex;
+  color: var(--theme);
+  align-items: center;
+}
+.introSlide a:hover span{
+  color: white;
+}
+
+.introBox form{
+  width: 80%;
+  min-height: 20vh;
+  z-index: 10;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  left: 10%;
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  position: absolute;
+  /* margin: auto; */
+  bottom: -10vh;
+}
+.introBox form section{
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+}
+.introBox form .inputField{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 10px;
+}
+.introBox form .inputField span{
+  font-size: 1.1rem;
+}
+.introBox form .inputField select{
+  color: #989494;
+  font-size: 1.1rem;
+}
+.introBox form button{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: var(--theme);
+  color: wheat;
+  font-size: 2rem;
+  height: 20vh;
+  border-radius: 0 10px 10px 0;
+  padding: 0 20px;
+}
+
+.showBox{
+  width: 90%;
+  margin: auto;
+  /* padding: 0 5%; */
+  /* border: 2px solid black; */
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.showBox .card{
+  color: black;
+  width: 95%;
+  padding: 1.5rem 2.5%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  gap: 0.5rem;
+  align-items: flex-start;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  position: relative;
+}
+.showBox .card legend{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.showBox .card header{
+  display: flex;
+  flex-direction: column;
+}
+.showBox .card header strong{
+  font-size: 1.3rem;
+  color: var(--theme);
+}
+.showBox .images{
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+}
+.showBox .card img{
+  object-fit: cover;
+  border-radius: 10px;
+  width: 300px;
+  height: 370px;
+}
+.showBox .card button{
+  background: var(--theme);
+  color: wheat;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+@media all and (max-width:900px){
+  .showBox{
+    padding: 3vh 0;
+  }
+  .showBox .card{
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  }
+  .showBox .card .images{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  .showBox .card img{
+    width: 200px;
+    height: 250px;
+  }
+  .showBox .card .header{
+    text-align: center;
+  }
+  .showBox .card_info{
+    text-align: center;
+  }
+}
+
+@media all and (max-width:1100px){
+  .introBox{
+    margin: 0;
+    flex-direction: column;
+    border-radius: 0;
+    width: 100%;
+  }
+  .introBox .right{
+    margin-top: 5vh;
+  }
+  .introSwiper{
+    border-radius: 30px;
+  }
+  .introSlide{
+    border-radius: 0;
+    min-height: 55vh;
+  }
+  .introBox .left{
+    border-radius: 0;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    background: white;
+    box-shadow: none;
+  }
+  .introBox .left p{
+    font-size: 1.5rem;
+  }
+  .introBox .left a, .introBox .left strong{
+    display: none;
+  }
+  .introBox .left,.introBox .right{
+    width: 100%;
+    padding: 0;
+  }
+  .introBox form{
+    min-height: auto;
+    position: revert;
+    width: 95%;
+    padding: 10px;
+  }
+  .introBox form button{
+    height: auto;
+    padding: 10px;
+  }
+}
+
+@media all and (max-width:800px){
+  .introBox{
+    min-height: 50vh;
+  }
+}
+
+@media all and (max-width:650px){
+  .introBox form{
+    flex-direction: column;
+    width: auto;
+    gap: 1rem;
+    padding: 0;
+    padding-top: 20px;
+  }
+  .introBox form .input_field{
+    padding: 0 10px;
+  }
+  .introBox form section{
+    gap: 0.5rem;
+    width: auto;
+    flex-direction: column;
+  }
+  .introBox form button{
+    width: auto;
+    padding: 2px 5px;
+    border-radius: 0 0 10px 10px;
+    width: 100%;
+    height: auto;
+  }
+  .showBox .card img{
+    width: 100%;
+  }
+}
+.showBox .card small{
+  height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+@media all and (max-width:500px){
+  .showBox{
+    width: 100%;
+  }
+  .introBox .right{
+    min-height: 35vh;
+    height: 35vh;
+  }
+  .showBox .card .images{
+    display: grid ;
+    gap: 0.2rem;
+    grid-template-columns: repeat(3,1fr);
+  }
+  .showBox .card img{
+    height: 120px;
+    width: 100%;
+  }
+
+}

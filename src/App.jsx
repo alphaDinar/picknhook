@@ -6,6 +6,7 @@ import Register from './Pages/Host/Register'
 import Loader from './Components/Loader'
 import Login from './Pages/Host/Login'
 import ViewProfile from './Pages/Client/ViewProfile'
+import Home from './Pages/Client/Home'
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
     <Loader />
       <section className='page'>
         <Routes>
+        <Route path='/' element={<Home/>} />
           <Route path='register' element={<Register />} />
           <Route path='login' element={<Login/>} />
           <Route path='createProfile/:id' element={<CreateProfile />} />

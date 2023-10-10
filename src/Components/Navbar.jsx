@@ -14,7 +14,7 @@ const Navbar = ({ props }) => {
             <a href="">Premium Ads.</a>
             <a href="">Contact Us </a>
           </nav>
-          <a href="" id="register_a">Register For free</a>
+          <Link to={'/register'} id="register_a">Register For free</Link>
         </>
       }
     </section>

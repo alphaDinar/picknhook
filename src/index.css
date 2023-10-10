@@ -17,17 +17,17 @@
   font-style: normal;
 }
 
-#logo{
+#logo {
   font-family: 'DessauProDrei';
 }
 
-:root{
+:root {
   --theme: palevioletred;
   /* --theme : pink; */
-  --primary : wheat;
+  --primary: wheat;
 }
 
-.loader{
+.loader {
   position: fixed;
   height: 100%;
   width: 100%;
@@ -42,7 +42,8 @@
   left: 0;
   z-index: 1000;
 }
-.loader section{
+
+.loader section {
   width: 150px;
   height: 150px;
   display: flex;
@@ -52,36 +53,51 @@
   border-radius: 50%;
 }
 
-.loader i{
+.loader i {
   color: var(--primary);
   font-size: 5rem;
 }
 
+.verified i {
+  width: 35px;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme);
+  color: var(--primary);
+  border-radius: 50%;
+  height: 35px;
+}
 
 
-strong sub{
+strong sub {
   width: 40px;
   height: 4px;
   background: var(--theme);
   display: block;
 }
 
-input, textarea{
+input,
+textarea {
   padding: 5px 10px;
   width: calc(100% - 20px);
   background: whitesmoke;
   border-radius: 5px;
 }
-select{
+
+select {
   background: whitesmoke;
   border-radius: 5px;
   height: 40px;
 }
-input{
+
+input {
   height: 30px;
   margin: 1px 0;
 }
-textarea{
+
+textarea {
   resize: none;
   height: 100px;
 }

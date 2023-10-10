@@ -74,10 +74,8 @@ const CreateProfile = () => {
     setLoader(true);
     onAuthStateChanged(fireAuth, (user) => {
       if (user) {
-        // console.log(user.email)
         getDoc(doc(fireStoreDB, 'Hosts/' + user.uid))
           .then((res) => {
-            // console.log(res)
             const userDoc = res.data()
             userDoc.phone && setPhone(userDoc.phone);
             userDoc.profile[0].username && setUsername(userDoc.profile[0].username);
@@ -130,8 +128,8 @@ const CreateProfile = () => {
             userDoc.profilePic && setProfilePicPreview(userDoc.profilePic);
             setLoader(false);
           })
-          .catch((error) => console.log(error))
-
+          .catch((error) => navigate('/login'))
+        
       } else {
         navigate('/login');
       }
