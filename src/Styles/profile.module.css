@@ -1,0 +1,269 @@
+.wrapper{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem 0;
+  padding: 3vh 0;
+}
+.coverBox{
+  height: 25vh;
+  border-radius: 10px;
+  width: 100%;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  margin-bottom: 50px;
+}
+.profilePreviewBox, .coverBox img{
+  position: absolute;
+  left: 50px;
+  bottom: -75px;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+}
+.coverBox img{
+  object-fit: cover;
+}
+
+.profilePreviewBox label{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+}
+
+
+.coverBox legend i{
+  background: var(--theme);
+  height: 35px;
+  width: 35px;
+  display: flex;
+  font-size: 2rem;
+  align-items: center;
+  color: var(--primary);
+  position: absolute;
+  left: -17.5px;
+  top: -17.5px;
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.infoBox{
+  display: flex;
+  justify-content: space-between;
+}
+.infoBox p{
+  display: flex;
+  flex-direction: column;
+}
+.infoBox strong{
+  font-size: 1.3rem;
+}
+.infoBox p a{
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--theme);
+}
+.infoBox span{
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+.infoBox span a{
+  font-size: 1.4rem;
+}
+
+.tagBox{
+  width: calc(100% - 20px);
+  padding:  10px;
+  border-radius: 5px;
+  border: 1px solid var(--theme);
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.tagBox sub{
+  background: var(--theme);
+  color: var(--primary);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.tagBox sub i{
+  font-size: 1rem;
+}
+.tagBox div{
+  display: flex;
+  align-items: center;
+  /* background: var(--theme); */
+}
+.tagBox div button i{
+  color: white;
+  padding: 5px;
+  border-radius: 3px;
+  cursor: pointer;
+  background: var(--theme);
+}
+
+.galleryBox{
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.galleryBox img{
+  width: 230px;
+  border-radius: 10px;
+  height: 300px;
+  object-fit: cover;
+}
+.galleryBox label{
+  position: relative;
+}
+
+.aboutBoxHolder{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem 0;
+}
+.aboutBox{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+
+.aboutBox section{
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.aboutBox p{
+  border-bottom: 1px dotted var(--theme);
+  display: flex;
+  flex-direction: column;
+}
+.aboutBox p strong{
+  font-size: 0.9rem;
+  color: var(--theme);
+  font-weight: normal;
+}
+.aboutBox p span{
+  font-size: 0.8rem;
+}
+
+.priceBox{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.imgSheet{
+  position:absolute;
+  background: rgba(0, 0, 0, 0.251);
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.imgSheet i{
+  font-size: 5rem;
+  color: wheat;
+}
+
+.priceBox section{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+.priceBox p{
+  width: 150px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  gap: 0.5rem;
+  border-radius: 10px;
+  background: var(--theme);
+}
+
+.priceBox p span{
+  color: var(--primary);
+}
+.priceBox p span i{
+  font-size: 1rem;
+}
+.priceBox p h4{
+  color: white;
+  font-size: 1.3rem;
+  font-weight: normal;
+}
+.priceBox p sub{
+  width: 90%;
+  height: 2px;
+  display: block;
+  background: var(--primary);
+}
+.priceBox p:last-child{
+  color: var(--theme);
+  background: white;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.wrapper button[type='submit']{
+  background: var(--theme);
+  padding: 10px;
+  border-radius: 5px;
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+@media all and (max-width:850px){
+  .aboutBox{
+    grid-template-columns: 1fr;
+  }
+}
+@media all and (max-width:650px){
+  .coverBox img, .profilePreviewBox{
+    width: 100px;
+    height: 100px;
+    bottom: -50px;
+  }
+  .infoBox{
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .galleryBox{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .galleryBox img{
+    width: 100%;
+    height: 230px;
+    /* height: 150px; */
+    /* height: auto; */
+  }
+  .priceBox section{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .priceBox section p{
+    width: 90%;
+    padding: 10px 5%;
+  }
+}
+
+

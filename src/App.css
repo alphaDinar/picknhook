@@ -1,0 +1,41 @@
+.page{
+  width: 80%;
+  height: 50vh;
+  margin: 3vh 10%;
+  /* border: 2px solid black; */
+}
+.main_nav{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 8vh;
+}
+#menu_tag{
+  display: none;
+}
+.main_nav a{
+  color: black;
+}
+#logo{
+  color: palevioletred;
+  font-size: 1.7rem;
+}
+.main_nav div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.main_nav #register_a{
+  border: 2px dotted darkgray;
+  border-radius: 20px;
+  padding: 7px;
+  color: palevioletred;
+  transition: 0.3s ease;
+}
+.main_nav #register_a:hover{
+  border: 2px solid transparent;
+  background: palevioletred;
+  color: white;
+}

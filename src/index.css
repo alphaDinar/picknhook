@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
+}
+
+:root{
+  --theme: palevioletred;
+  --primary : wheat;
+}
+
+input, textarea{
+  padding: 5px 10px;
+  width: calc(100% - 20px);
+  background: whitesmoke;
+  border-radius: 5px;
+}
+select{
+  background: whitesmoke;
+  border-radius: 5px;
+  height: 40px;
+}
+input{
+  height: 30px;
+  margin: 1px 0;
+}
+textarea{
+  resize: none;
+  height: 100px;
+}
