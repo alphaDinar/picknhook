@@ -1,41 +1,52 @@
 .page{
   width: 80%;
-  height: 50vh;
   margin: 3vh 10%;
-  /* border: 2px solid black; */
 }
-.main_nav{
+.mainNav{
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  min-height: 8vh;
 }
-#menu_tag{
-  display: none;
-}
-.main_nav a{
+.mainNav a{
   color: black;
 }
 #logo{
-  color: palevioletred;
+  color:var(--theme);
+  font-weight: 400;
   font-size: 1.7rem;
 }
-.main_nav div{
+.mainNav nav{
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
 }
-.main_nav #register_a{
+.mainNav #register_a{
   border: 2px dotted darkgray;
   border-radius: 20px;
   padding: 7px;
-  color: palevioletred;
+  color: var(--theme);
   transition: 0.3s ease;
 }
-.main_nav #register_a:hover{
+.mainNav #register_a:hover{
   border: 2px solid transparent;
-  background: palevioletred;
+  background: var(--theme);
   color: white;
+}
+
+@media all and (max-width:900px){
+  .mainNav{
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .mainNav nav a{
+    font-size: 0.8rem;
+  }
+}
+@media all and (max-width:400px){
+  .mainNav nav{
+    flex-direction: column;
+    gap: 0.1rem;
+  }
 }

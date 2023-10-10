@@ -207,7 +207,7 @@
 .priceBox p span i{
   font-size: 1rem;
 }
-.priceBox p h4{
+.priceBox p strong{
   color: white;
   font-size: 1.3rem;
   font-weight: normal;

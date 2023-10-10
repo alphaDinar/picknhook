@@ -1,28 +1,32 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Navbar from '../../Components/Navbar';
 import { icon, iconFont } from '../../External/external';
 import styles from '../../Styles/profile.module.css'
+import { useLoader } from '../../main';
+import { onAuthStateChanged } from 'firebase/auth';
+import { fireAuth, fireStoreDB, storageDB } from '../../Firebase/base';
+import { useNavigate } from 'react-router-dom';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { uploadBytes, ref as storageRef, getDownloadURL } from 'firebase/storage';
 
 const CreateProfile = () => {
-  const cover = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696773681/_120424467_joy2_a6y2kz.jpg';
-  // const face = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696775658/profile-1640014292-4a26a41437da03f345e9f0ed8fa0d60e_mu37cj.jpg';
-  const face = cover
+  const { loader, setLoader } = useLoader();
+  const navigate = useNavigate();
 
-  // <Navbar />
-  const [coverImage, setCoverImage] = useState('');
-  const [profileImage, setProfileImage] = useState('');
-  const [coverPreview, setCoverPreview] = useState(cover);
-  const [profilePreview, setProfilePreview] = useState(face);
+  const [cover, setCover] = useState('');
+  const [profilePic, setProfilePic] = useState('');
+  const [coverPreview, setCoverPreview] = useState('');
+  const [profilePicPreview, setProfilePicPreview] = useState('');
 
   const [username, setUsername] = useState('');
   const [location, setLocation] = useState('');
-  const [mobile, setMobile] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [instagram, setInstagram] = useState('');
   const [xSpace, setXSpace] = useState('');
   const [tiktok, setTiktok] = useState('');
   const [bio, setBio] = useState('');
-  const [tags, setTags] = useState(['freaky']);
+  const [tags, setTags] = useState([]);
   const [tagIn, setTagIn] = useState('');
   const tagSubs = useRef([]);
 
@@ -44,7 +48,7 @@ const CreateProfile = () => {
   const [weight, setWeight] = useState('');
   const [clients, setClients] = useState('');
   const [outcall, setOutcall] = useState('not specified');
-  const [inCall, setInCall] = useState('not specified');
+  const [incall, setIncall] = useState('not specified');
   const [straightSex, setStraightSex] = useState('not specified');
   const [massage, setMassage] = useState('not specified');
   const [oralG, setOralG] = useState('not specified');
@@ -63,22 +67,200 @@ const CreateProfile = () => {
   const [price24, setPrice24] = useState('');
   const [payment, setPayment] = useState('all');
 
+  const [imageSet, setImage] = useState(['', '', '', '', '']);
+  const previewImageSet = useRef([]);
+
+  useEffect(() => {
+    setLoader(true);
+    onAuthStateChanged(fireAuth, (user) => {
+      if (user) {
+        // console.log(user.email)
+        getDoc(doc(fireStoreDB, 'Hosts/' + user.uid))
+          .then((res) => {
+            // console.log(res)
+            const userDoc = res.data()
+            userDoc.phone && setPhone(userDoc.phone);
+            userDoc.profile[0].username && setUsername(userDoc.profile[0].username);
+            userDoc.profile[0].location && setLocation(userDoc.profile[0].location);
+            userDoc.profile[0].phone && setPhone(userDoc.profile[0].phone);
+            userDoc.profile[0].email && setEmail(userDoc.profile[0].email);
+            userDoc.profile[0].instagram && setInstagram(userDoc.profile[0].instagram);
+            userDoc.profile[0].xSpace && setXSpace(userDoc.profile[0].xSpace);
+            userDoc.profile[0].tiktok && setTiktok(userDoc.profile[0].tiktok);
+            userDoc.profile[0].bio && setBio(userDoc.profile[0].bio);
+
+            userDoc.profile[0].gender && setGender(userDoc.profile[0].gender);
+            userDoc.profile[0].sexPref && setSexPref(userDoc.profile[0].sexPref);
+            userDoc.profile[0].languages && setLanguages(userDoc.profile[0].languages);
+            userDoc.profile[0].age && setAge(userDoc.profile[0].age);
+            userDoc.profile[0].ethnic && setEthnic(userDoc.profile[0].ethnic);
+            userDoc.profile[0].hair && setHair(userDoc.profile[0].hair);
+            userDoc.profile[0].eye && setEye(userDoc.profile[0].eye);
+            userDoc.profile[0].hobby && setHobby(userDoc.profile[0].hobby);
+            userDoc.profile[0].breast && setBreast(userDoc.profile[0].breast);
+            userDoc.profile[0].shaved && setShaved(userDoc.profile[0].shaved);
+            userDoc.profile[0].implants && setImplants(userDoc.profile[0].implants);
+            userDoc.profile[0].tattoos && setTattoos(userDoc.profile[0].tattoos);
+            userDoc.profile[0].pierce && setPierce(userDoc.profile[0].pierce);
+            userDoc.profile[0].body && setBody(userDoc.profile[0].body);
+            userDoc.profile[0].height && setHeight(userDoc.profile[0].height);
+            userDoc.profile[0].weight && setWeight(userDoc.profile[0].weight);
+            userDoc.profile[0].clients && setClients(userDoc.profile[0].clients);
+            userDoc.profile[0].outcall && setOutcall(userDoc.profile[0].outcall);
+            userDoc.profile[0].incall && setIncall(userDoc.profile[0].incall);
+            userDoc.profile[0].straightSex && setStraightSex(userDoc.profile[0].straightSex);
+            userDoc.profile[0].massage && setMassage(userDoc.profile[0].massage);
+            userDoc.profile[0].oralG && setOralG(userDoc.profile[0].oralG);
+            userDoc.profile[0].oralT && setOralT(userDoc.profile[0].oralT);
+            userDoc.profile[0].anal && setAnal(userDoc.profile[0].anal);
+            userDoc.profile[0].french && setFrench(userDoc.profile[0].french);
+            userDoc.profile[0].fetish && setFetish(userDoc.profile[0].fetish);
+            userDoc.profile[0].bdsm && setBDSM(userDoc.profile[0].bdsm);
+            userDoc.profile[0].stripP && setStripP(userDoc.profile[0].stripP);
+            userDoc.profile[0].stripG && setStripG(userDoc.profile[0].stripG);
+
+            userDoc.payment[0].price1 && setPrice1(userDoc.payment[0].price1);
+            userDoc.payment[0].priceExtra && setPriceExtra(userDoc.payment[0].priceExtra);
+            userDoc.payment[0].price4 && setPrice4(userDoc.payment[0].price4);
+            userDoc.payment[0].price8 && setPrice8(userDoc.payment[0].price8);
+            userDoc.payment[0].price24 && setPrice24(userDoc.payment[0].price24);
+            userDoc.payment[0].payment && setPayment(userDoc.payment[0].payment);
+
+            userDoc.cover && setCoverPreview(userDoc.cover);
+            userDoc.profilePic && setProfilePicPreview(userDoc.profilePic);
+            setLoader(false);
+          })
+          .catch((error) => console.log(error))
+
+      } else {
+        navigate('/login');
+      }
+    })
+  }, [])
+
+
+  // console.log(profilePicPreview)
+
+
+  const handleImages = () => {
+    // console.log('images')
+    const gallerySet = [];
+    gallerySet.push({ 'cover': cover });
+    gallerySet.push({ 'profile': profile });
+
+    console.log(gallerySet)
+    gallerySet.map((el) => {
+      console.log(Object.keys(el))
+      console.log(Object.values(el))
+    })
+
+  }
+
+  const updateProfile = () => {
+    setLoader(true);
+    onAuthStateChanged(fireAuth, async (user) => {
+      if (user) {
+        if (cover) {
+          await uploadBytes(storageRef(storageDB, 'HostsStorage' + cover.name + Date.now().toString()), cover)
+            .then((res) => {
+              getDownloadURL(res.ref)
+                .then((imgURL) => {
+                  updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
+                    cover: imgURL
+                  })
+                    .then(setLoader(false))
+                    .catch((error) => console.log(error))
+                })
+            })
+        }
+        if (profilePic) {
+          await uploadBytes(storageRef(storageDB, 'HostsStorage' + profilePic.name + Date.now().toString()), profilePic)
+            .then((res) => {
+              getDownloadURL(res.ref)
+                .then((imgURL) => {
+                  updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
+                    profilePic: imgURL
+                  })
+                    .then(setLoader(false))
+                    .catch((error) => console.log(error))
+                })
+            })
+        }
+
+        updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
+          profile: [{
+            username: username,
+            location: location,
+            phone: phone,
+            email: email,
+            instagram: instagram,
+            xSpace: xSpace,
+            tiktok: tiktok,
+            bio: bio,
+            gender: gender,
+            sexPref: sexPref,
+            languages: languages,
+            age: age,
+            ethnic: ethnic,
+            hair: hair,
+            eye: eye,
+            hobby: hobby,
+            breast: breast,
+            shaved: shaved,
+            implants: implants,
+            tattoos: tattoos,
+            pierce: pierce,
+            body: body,
+            height: height,
+            weight: weight,
+            clients: clients,
+            outcall: outcall,
+            incall: incall,
+            straightSex: straightSex,
+            massage: massage,
+            oralG: oralG,
+            oralT: oralT,
+            anal: anal,
+            french: french,
+            fetish: fetish,
+            bdsm: BDSM,
+            stripP: stripP,
+            stripG: stripG
+          }],
+          payment: [{
+            price1: price1,
+            priceExtra: priceExtra,
+            price4: price4,
+            price8: price8,
+            price24: price24,
+            payment: payment
+          }],
+          tags: tags,
+        })
+          .then(() => {
+            console.log('changed')
+            !cover && setLoader(false);
+          })
+          .catch((error) => { console.log(error); setLoader(false) })
+      }
+    })
+    console.log('me')
+  }
 
   const addTag = () => {
-    if(tagIn){
+    if (tagIn) {
       const updatedTags = [...tags, tagIn];
       setTags(updatedTags);
       setTagIn('');
     }
   }
 
-  const remTag =(i)=>{
-    const updatedTags = tags.filter((tag)=> tags.indexOf(tag) !== i);
+  const remTag = (i) => {
+    const updatedTags = tags.filter((tag) => tags.indexOf(tag) !== i);
     setTags(updatedTags)
   }
 
-  const [imageSet, setImage] = useState(['', '', '', '', '']);
-  const previewImageSet = useRef([]);
+
 
   const handleImage = (img, i) => {
     imageSet[i] = img;
@@ -86,15 +268,14 @@ const CreateProfile = () => {
   }
 
 
-
   return (
     <>
-      <Navbar />
-      <form className={styles.wrapper}>
+      <Navbar props={{ type: 'min' }} />
+      <form className={styles.wrapper} onSubmit={e => { e.preventDefault(); updateProfile() }}>
         <section className={styles.coverBox} style={{ backgroundImage: `url(${coverPreview})` }}>
           <label htmlFor="addCoverImage" style={{ display: 'flex', width: '100%', height: '100%' }}>
             <input type="file" id='addCoverImage' onChange={e => {
-              setCoverImage(e.target.files[0])
+              setCover(e.target.files[0])
               setCoverPreview(URL.createObjectURL(e.target.files[0]))
             }} accept='image/*' style={{ display: 'none' }} />
             <sup className={styles.imgSheet} style={{ borderRadius: '10px' }}>{icon('add_a_photo')}</sup>
@@ -106,11 +287,11 @@ const CreateProfile = () => {
           <div className={styles.profilePreviewBox}>
             <label>
               <input type="file" id='addCoverImage' onChange={e => {
-                setProfileImage(e.target.files[0])
-                setProfilePreview(URL.createObjectURL(e.target.files[0]))
+                setProfilePic(e.target.files[0])
+                setProfilePicPreview(URL.createObjectURL(e.target.files[0]))
               }} accept='image/*' style={{ display: 'none' }} />
-              <sup className={styles.imgSheet} style={{ borderRadius: '50%' }}>{icon('add_a_photo')}</sup>
-              <img src={profilePreview} style={{ position: 'revert' }} />
+              <sup className={styles.imgSheet} style={{ borderRadius: '50%', fontSize: '1rem' }}>{icon('add_a_photo')}</sup>
+              <img src={profilePicPreview} style={{ position: 'revert' }} />
             </label>
           </div>
         </section>
@@ -120,7 +301,7 @@ const CreateProfile = () => {
             <small><input type="text" placeholder='Location' value={location} onChange={e => { setLocation(e.target.value) }} required /></small>
           </p>
           <p>
-            <a >{icon('phone_iphone')} <input type="tel" placeholder='Mobile' value={mobile} onChange={e => { setMobile(e.target.value) }} required /> </a>
+            <a >{icon('phone_iphone')} <input type="tel" placeholder='Phone' value={phone} onChange={e => { setPhone(e.target.value) }} required /> </a>
             <a >{icon('mail')} <input type="email" placeholder='Email (optional)' value={email} onChange={e => { setEmail(e.target.value) }} /></a>
           </p>
         </section>
@@ -134,12 +315,12 @@ const CreateProfile = () => {
         <section className={styles.bioBox}>
           <h3>Bio</h3>
           <small>
-            <textarea value={bio} onChange={e => { setBio(e.target.value) }} placeholder='about yourself'></textarea>
+            <textarea value={bio} onChange={e => { setBio(e.target.value) }} placeholder='about yourself' />
           </small>
         </section>
         <section className={styles.tagBox}>
-          {tags.map((el,i) => (
-            <sub onClick={()=>{remTag(i)}}>{el} {icon('delete')}</sub>
+          {tags.map((el, i) => (
+            <sub onClick={() => { remTag(i) }}>{el} {icon('delete')}</sub>
           ))}
           <div>
             <input type="text" placeholder='your tags eg: freaky' value={tagIn} onChange={e => { setTagIn(e.target.value) }} /> <button type='button' onClick={addTag}> {icon('add')}</button>
@@ -150,7 +331,7 @@ const CreateProfile = () => {
             <label htmlFor={`image${i}`}>
               <sup className={styles.imgSheet} style={{ borderRadius: '10px' }}>{icon('add_a_photo')}</sup>
               <input id={`image${i}`} onChange={e => { handleImage(e.target.files[0], i) }} type="file" style={{ display: 'none' }} />
-              <img src={cover} ref={(obj) => { previewImageSet.current[i] = obj }} />
+              <img src={coverPreview} ref={(obj) => { previewImageSet.current[i] = obj }} />
             </label>
           ))}
         </section>
@@ -160,14 +341,14 @@ const CreateProfile = () => {
             <section>
               <p>
                 <strong>Gender</strong>
-                <select onChange={e => { setGender(e.target.value) }}>
+                <select value={gender} onChange={e => { setGender(e.target.value) }}>
                   <option value="female">Female</option>
                   <option value="male">Male</option>
                 </select>
               </p>
               <p>
                 <strong>Sexual preference</strong>
-                <select onChange={e => { setSexPref(e.target.value) }}>
+                <select value={sexPref} onChange={e => { setSexPref(e.target.value) }}>
                   <option value="straight">Straight</option>
                   <option value="bi">Bi</option>
                 </select>
@@ -204,7 +385,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Shaved</strong>
-                <select onChange={e => { setShaved(e.target.value) }}>
+                <select value={shaved} onChange={e => { setShaved(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -247,7 +428,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Outcall(national)</strong>
-                <select onChange={e => { setOutcall(e.target.value) }}>
+                <select value={outcall} onChange={e => { setOutcall(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -255,7 +436,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Incall</strong>
-                <select onChange={e => { setInCall(e.target.value) }}>
+                <select value={incall} onChange={e => { setIncall(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -263,7 +444,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Straight Sex</strong>
-                <select onChange={e => { setStraightSex(e.target.value) }}>
+                <select value={straightSex} onChange={e => { setStraightSex(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -271,7 +452,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Massage</strong>
-                <select onChange={e => { setMassage(e.target.value) }}>
+                <select value={massage} onChange={e => { setMassage(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -279,7 +460,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Oral Sex(giving)</strong>
-                <select onChange={e => { setOralG(e.target.value) }}>
+                <select value={oralG} onChange={e => { setOralG(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -287,7 +468,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Oral Sex(taking)</strong>
-                <select onChange={e => { setOralT(e.target.value) }}>
+                <select value={oralT} onChange={e => { setOralT(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -297,7 +478,7 @@ const CreateProfile = () => {
             <section>
               <p>
                 <strong>Anal Sex</strong>
-                <select onChange={e => { setAnal(e.target.value) }}>
+                <select value={anal} onChange={e => { setAnal(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -305,7 +486,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>French Kissing</strong>
-                <select onChange={e => { setFrench(e.target.value) }}>
+                <select value={french} onChange={e => { setFrench(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -313,7 +494,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Fetish and Fantasy</strong>
-                <select onChange={e => { setFetish(e.target.value) }}>
+                <select value={fetish} onChange={e => { setFetish(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -321,7 +502,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>BDSM</strong>
-                <select onChange={e => { setBDSM(e.target.value) }}>
+                <select value={BDSM} onChange={e => { setBDSM(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -329,7 +510,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Striptease(private)</strong>
-                <select onChange={e => { setStripP(e.target.value) }}>
+                <select value={stripP} onChange={e => { setStripP(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -337,7 +518,7 @@ const CreateProfile = () => {
               </p>
               <p>
                 <strong>Striptease(group)</strong>
-                <select onChange={e => { setStripG(e.target.value) }}>
+                <select value={stripG} onChange={e => { setStripG(e.target.value) }}>
                   <option value='not specified'>Not specified</option>
                   <option value="yes">yes</option>
                   <option value="no">no</option>
@@ -353,39 +534,39 @@ const CreateProfile = () => {
             <p>
               <span> {icon('hourglass')}  1 hour [USD]</span>
               <sub></sub>
-              <h4><input type="number" value={price1} onChange={e => { setPrice1(e.target.value) }} placeholder='USD' required /></h4>
+              <strong><input type="number" value={price1} onChange={e => { setPrice1(e.target.value) }} placeholder='USD' /></strong>
             </p>
             <p>
               <span> {icon('hourglass')}  extra hour</span>
               <sub></sub>
-              <h4><input type="number" value={priceExtra} onChange={e => { setPriceExtra(e.target.value) }} placeholder='USD' required /></h4>
+              <strong><input type="number" value={priceExtra} onChange={e => { setPriceExtra(e.target.value) }} placeholder='USD' /></strong>
             </p>
             <p>
               <span> {icon('hourglass')}  4 hour</span>
               <sub></sub>
-              <h4><input type="number" value={price4} onChange={e => { setPrice4(e.target.value) }} placeholder='USD' required /></h4>
+              <strong><input type="number" value={price4} onChange={e => { setPrice4(e.target.value) }} placeholder='USD' /></strong>
             </p>
             <p>
               <span> {icon('hourglass')}  8 hour</span>
               <sub></sub>
-              <h4><input type="number" value={price8} onChange={e => { setPrice8(e.target.value) }} placeholder='USD' required /></h4>
+              <strong><input type="number" value={price8} onChange={e => { setPrice8(e.target.value) }} placeholder='USD' /></strong>
             </p>
             <p>
               <span> {icon('hourglass')}  24 hour</span>
               <sub></sub>
-              <h4><input type="number" value={price24} onChange={e => { setPrice24(e.target.value) }} placeholder='USD' required /></h4>
+              <strong><input type="number" value={price24} onChange={e => { setPrice24(e.target.value) }} placeholder='USD' /></strong>
             </p>
             <p>
               <span style={{ color: 'var(--theme)' }}> Payments</span>
               <sub></sub>
-              <h4 style={{ color: 'var(--theme)' }}>
-                <select onChange={e => { setPayment(e.target.value) }}>
+              <strong style={{ color: 'var(--theme)' }}>
+                <select value={payment} onChange={e => { setPayment(e.target.value) }}>
                   <option value='all'>All</option>
                   <option value='cash'>Cash</option>
                   <option value="Card">Card</option>
                   <option value="mobile">mobile</option>
                 </select>
-              </h4>
+              </strong>
             </p>
           </section>
         </section>

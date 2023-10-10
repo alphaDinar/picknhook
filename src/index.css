@@ -10,9 +10,60 @@
   scroll-behavior: smooth;
 }
 
+@font-face {
+  font-family: 'DessauProDrei';
+  src: url('./assets/DessauProDrei.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+#logo{
+  font-family: 'DessauProDrei';
+}
+
 :root{
   --theme: palevioletred;
+  /* --theme : pink; */
   --primary : wheat;
+}
+
+.loader{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.384);
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+.loader section{
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme);
+  border-radius: 50%;
+}
+
+.loader i{
+  color: var(--primary);
+  font-size: 5rem;
+}
+
+
+
+strong sub{
+  width: 40px;
+  height: 4px;
+  background: var(--theme);
+  display: block;
 }
 
 input, textarea{

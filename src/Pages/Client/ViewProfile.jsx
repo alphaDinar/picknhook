@@ -2,14 +2,13 @@ import Navbar from '../../Components/Navbar';
 import { icon, iconFont } from '../../External/external';
 import styles from '../../Styles/profile.module.css'
 
-const Profile = () => {
+const ViewProfile = () => {
   const cover = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696773681/_120424467_joy2_a6y2kz.jpg';
   const face = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696775658/profile-1640014292-4a26a41437da03f345e9f0ed8fa0d60e_mu37cj.jpg';
 
-  // <Navbar />
-
   return (
     <>
+      <Navbar props={{type: 'min'}} />
       <section className={styles.wrapper}>
         <section className={styles.coverBox} style={{ backgroundImage: `url(${cover}` }}>
           <legend>
@@ -217,32 +216,32 @@ const Profile = () => {
             <p>
               <span> {icon('hourglass')}  1 hour</span>
               <sub></sub>
-              <h4>100 USD</h4>
+              <strong>100 USD</strong>
             </p>
             <p>
               <span> {icon('hourglass')}  extra hour</span>
               <sub></sub>
-              <h4>50 USD</h4>
+              <strong>50 USD</strong>
             </p>
             <p>
               <span> {icon('hourglass')}  4 hour</span>
               <sub></sub>
-              <h4>400 USD</h4>
+              <strong>400 USD</strong>
             </p>
             <p>
               <span> {icon('hourglass')}  8 hour</span>
               <sub></sub>
-              <h4>450 USD</h4>
+              <strong>450 USD</strong>
             </p>
             <p>
               <span> {icon('hourglass')}  24 hour</span>
               <sub></sub>
-              <h4>500 USD</h4>
+              <strong>500 USD</strong>
             </p>
             <p>
               <span style={{color:'var(--theme)'}}> Payments</span>
               <sub></sub>
-              <h4 style={{color:'var(--theme)'}}>Cash</h4>
+              <strong style={{color:'var(--theme)'}}>Cash</strong>
             </p>
           </section>
         </section>
@@ -255,4 +254,4 @@ const Profile = () => {
   );
 }
 
-export default Profile;
+export default ViewProfile;
