@@ -25,20 +25,15 @@ const Register = () => {
           createUserWithEmailAndPassword(fireAuth, email, password)
             .then((res) => {
               console.log('mexes')
-              setDoc(doc(fireStoreDB, 'Gallery/' + res.user.uid), {
-                posts: []
+              setDoc(doc(fireStoreDB, 'Hosts/' + res.user.uid), {
+                email: res.user.email,
+                phone: phone,
+                profile: [{}],
+                payment: [{}],
+                posts: [],
+                tags: [],
               })
-                .then(() => {
-                  setDoc(doc(fireStoreDB, 'Hosts/' + res.user.uid), {
-                    email: res.user.email,
-                    phone: phone,
-                    profile: [{}],
-                    payment: [{}],
-                    tags: [],
-                  })
-                    .then(() => navigate('/login'))
-                    .catch((error) => console.log(error))
-                })
+                .then(() => navigate('/login'))
                 .catch((error) => console.log(error))
             })
             .catch((error) => {

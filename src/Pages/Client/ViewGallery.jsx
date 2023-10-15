@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { getTimeSince, icon } from '../../External/external';
+import { getTimeSince, icon, sortPostsByTime } from '../../External/external';
 import styles from '../../Styles/gallery.module.css';
 import { useEffect, useRef, useState } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -26,16 +26,13 @@ const ViewGallery = () => {
     getDoc(doc(fireStoreDB, 'Hosts/' + id))
       .then((res) => {
         setUsername(res.data().profile[0].username)
-        getDoc(doc(fireStoreDB, 'Gallery/' + id))
+        getDoc(doc(fireStoreDB, 'Hosts/' + id))
           .then((gallery) => {
-            setPosts(gallery.data().posts)
-            setLikeList(gallery.data().posts.map((el) => el.likes))
+            setPosts(gallery.data().posts.sort(sortPostsByTime))
+            setLikeList(gallery.data().posts.sort(sortPostsByTime).map((el) => el.likes))
             setLoader(false)
           })
-        // console.log()
       })
-
-
   }, [])
 
   const likePost = (pid, i) => {
@@ -47,7 +44,7 @@ const ViewGallery = () => {
     postObj.likes += 1;
     posts[postObjIndex] = postObj;
     setPosts(posts)
-    updateDoc(doc(fireStoreDB, 'Gallery/' + id), {
+    updateDoc(doc(fireStoreDB, 'Hosts/' + id), {
       posts: posts
     })
       .then(() => {

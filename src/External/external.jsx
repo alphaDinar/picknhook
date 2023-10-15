@@ -53,3 +53,10 @@ export const getTimeSince = (date) => {
     }
   }
 }
+
+
+export const sortPostsByTime =(a,b)=>{
+  const timeA = a.timestamp
+  const timeB = b.timestamp
+  return timeB - timeA
+}

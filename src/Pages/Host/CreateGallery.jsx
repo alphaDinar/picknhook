@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getTimeSince, icon } from '../../External/external';
+import { getTimeSince, icon, sortPostsByTime } from '../../External/external';
 import styles from '../../Styles/gallery.module.css';
 import { useLoader } from '../../main';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -31,11 +31,8 @@ const CreateGallery = () => {
         getDoc(doc(fireStoreDB, 'Hosts/' + user.uid))
           .then((res) => {
             setUsername(res.data().profile[0].username);
-            getDoc(doc(fireStoreDB, 'Gallery/' + user.uid))
-              .then((res) => {
-                setPosts(res.data().posts)
-                setLoader(false);
-              })
+            setPosts(res.data().posts.sort(sortPostsByTime))
+            setLoader(false);
           })
       } else {
         navigate('/login')
@@ -57,12 +54,13 @@ const CreateGallery = () => {
                 likes: 0,
                 timestamp: Date.now()
               }
-              const updatedPosts = [...posts, postObj];
-              setPosts(updatedPosts);
+              const updatedPosts = [...posts,postObj];
+              setPosts([...posts,postObj].sort(sortPostsByTime))
+              // const updatedPostsTemp = [...posts,postObj].reverse();
               setMedia('');
               setPreviewImage('');
               setMediaType('image');
-              updateDoc(doc(fireStoreDB, 'Gallery/' + uid), {
+              updateDoc(doc(fireStoreDB, 'Hosts/' + uid), {
                 posts: updatedPosts
               })
                 .then(()=>{setLoader(false)})
@@ -80,8 +78,9 @@ const CreateGallery = () => {
     const option = window.confirm('Do you want to delete post');
     if(option){
       const updatedPosts = [...posts.filter((el)=> el.id !== pid)];
-      setPosts(updatedPosts)
-      updateDoc(doc(fireStoreDB, 'Gallery/' + uid), {
+      // const updatedPostsTemp = updatedPosts.reverse();
+      setPosts(updatedPosts);
+      updateDoc(doc(fireStoreDB, 'Hosts/' + uid), {
         posts: updatedPosts
       })
       .then(()=>{

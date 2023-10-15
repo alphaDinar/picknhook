@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../../Components/Navbar';
-import { icon, iconFont } from '../../External/external';
+import { icon, iconFont, sortPostsByTime } from '../../External/external';
 import styles from '../../Styles/profile.module.css'
 import { Link, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
@@ -23,12 +23,9 @@ const ViewProfile = () => {
     getDoc(doc(fireStoreDB, 'Hosts/' + id))
       .then((res) => {
         setHost(res.data())
-        getDoc(doc(fireStoreDB, 'Gallery/' + id))
-          .then((posts) => {
-            setGallery(posts.data().posts.slice(0, 5))
-            setLastPostIndex(posts.data().posts.slice(0, 5).length - 1)
-            setLoader(false);
-          })
+        setGallery(res.data().posts.sort(sortPostsByTime).slice(0, 5))
+        setLastPostIndex(res.data().posts.slice(0, 5).length - 1)
+        setLoader(false);
       })
   }, [])
 

@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { Link } from "react-router-dom";
-import { icon } from "../../External/external";
+import { icon, sortPostsByTime } from "../../External/external";
 import { useEffect, useState } from "react";
 import { fireStoreDB } from '../../Firebase/base';
 import { getDocs, collection } from 'firebase/firestore';
@@ -14,6 +14,7 @@ const Home = () => {
   const sample = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696773681/_120424467_joy2_a6y2kz.jpg';
 
   const [hostList, setHostList] = useState('');
+  const [galleryList, setGalleryList] = useState([]);
   const {loader, setLoader} = useLoader();
 
   useEffect(() => {
@@ -21,12 +22,9 @@ const Home = () => {
     getDocs(collection(fireStoreDB, 'Hosts/'))
       .then((res) => {
         const hostListTemp = res.docs.map((el)=> [el.id, el.data()]);
+        const galleryListTemp = res.docs.map((el)=> el.data().posts.sort(sortPostsByTime))
         setHostList(hostListTemp)
-
-        // res.docs.map((el)=>{
-        //   console.log(el.data().profile && el.data().profile[0].username)
-        // })
-
+        setGalleryList(galleryListTemp)
         setLoader(false);
       })
   }, [])
@@ -102,7 +100,14 @@ const Home = () => {
               <div className={styles.images}>
                 <img src={host[1].cover && host[1].cover} alt="" />
                 <img src={host[1].profilePic && host[1].profilePic} alt="" />
-                <img src={sample} alt="" />
+                {console.log(galleryList[i][0])}
+                {
+                  galleryList[i][0] ?
+                  galleryList[i][0].type == 'image' ?
+                  <img src={galleryList[i][0].media } />:
+                  <video src={galleryList[i][0].media } autoPlay loop muted></video> 
+                  : null
+                }
               </div>
               <small className="info">{host[1].profile && host[1].profile[0].bio}</small>
               <button type="button">View Profile </button>

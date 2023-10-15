@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Navbar from '../../Components/Navbar';
-import { icon, iconFont } from '../../External/external';
+import { icon, iconFont, sortPostsByTime } from '../../External/external';
 import styles from '../../Styles/profile.module.css'
 import { useLoader } from '../../main';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -130,17 +130,14 @@ const CreateProfile = () => {
             userDoc.cover && setCoverPreview(userDoc.cover);
             userDoc.profilePic && setProfilePicPreview(userDoc.profilePic);
 
-            getDoc(doc(fireStoreDB, 'Gallery/' + user.uid))
-              .then((posts) => {
-                setGallery(posts.data().posts.slice(0, 5))
-                setLastPostIndex(posts.data().posts.slice(0, 5).length - 1)
-                setLoader(false);
-                const tes = posts.data().posts.reduce((val,el)=> val + el.likes, 0);
-                console.log(tes)
-                // console.log(posts.data().posts.map((el)=> console.log(el, 'try')))
-              })
+
+            setGallery(userDoc.posts.sort(sortPostsByTime).slice(0, 5))
+            setLastPostIndex(userDoc.posts.slice(0, 5).length - 1)
+            setLoader(false);
+            const tes = userDoc.posts.reduce((val, el) => val + el.likes, 0);
+            console.log(userDoc)
           })
-          .catch((error) => navigate('/login'))
+          .catch((error) => console.log(error))
       } else {
         navigate('/login');
       }
@@ -324,7 +321,7 @@ const CreateProfile = () => {
         <section className={styles.bioBox}>
           <h3>Bio</h3>
           <small>
-            <textarea value={bio} onChange={e => { setBio(e.target.value) }} placeholder='about yourself' />
+            <textarea value={bio} onChange={e => { setBio(e.target.value) }} placeholder='about yourself' required />
           </small>
         </section>
         <section className={styles.tagBox}>
@@ -357,6 +354,9 @@ const CreateProfile = () => {
               }
             </Link>
           </section>
+          <small>
+            <Link to={`/createGallery`}>Add To gallery</Link>
+          </small>
         </section>
         <section className={styles.aboutBoxHolder}>
           <h3>About</h3>

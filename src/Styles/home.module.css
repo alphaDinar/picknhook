@@ -197,7 +197,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
 }
-.showBox .card img{
+.showBox .card img, .showBox .card video{
   object-fit: cover;
   border-radius: 10px;
   width: 300px;
@@ -224,7 +224,7 @@
     flex-wrap: wrap;
     justify-content: space-around;
   }
-  .showBox .card img{
+  .showBox .card img, .showBox .card video{
     width: 200px;
     height: 250px;
   }
@@ -316,7 +316,7 @@
     width: 100%;
     height: auto;
   }
-  .showBox .card img{
+  .showBox .card img, .showBox .card video{
     width: 100%;
   }
 }
@@ -341,7 +341,7 @@
     gap: 0.2rem;
     grid-template-columns: repeat(3,1fr);
   }
-  .showBox .card img{
+  .showBox .card img, .showBox .card video{
     height: 120px;
     width: 100%;
   }
