@@ -1,0 +1,126 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.wrapper header strong {
+  font-size: 1.5rem;
+}
+.wrapper header strong i{
+  font-weight: 600;
+  color: var(--theme);
+}
+
+
+.images {
+  width: calc(100% - 40px);
+  gap: 2rem;
+  display: grid;
+  align-items: flex-start;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media all and (max-width:1000px) {
+  .images {
+    margin: auto;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .images>* {
+    margin: auto;
+  }
+}
+
+.images .imgBox {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 50px;
+  justify-content: space-between;
+}
+
+
+/* .images .imgBox legend */
+.images .imgBox legend {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 5px;
+  z-index: 100;
+  cursor: pointer;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.267);
+  color: white;
+}
+.images .imgBox article{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: tomato;
+  z-index: 100;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.images .imgBox p {
+  max-width: calc(100% - 40px - 20px);
+  left: 20px;
+  bottom: 25px;
+  color: white;
+  background: rgba(0, 0, 0, 0.493);
+  padding: 10px;
+  position: absolute;
+  display: flex;
+  border-radius: 10px;
+  flex-direction: column;
+}
+
+.images .imgBox p sub {
+  color: wheat;
+}
+
+.images .imgBox img, .images .imgBox video {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.images .imgBox.add {
+  border: 1px solid darkgray;
+  border-radius: 10px;
+}
+
+.images .imgBox.add img {
+  min-height: 300px;
+  object-fit: cover;
+}
+
+.images .imgBox.add small {
+  width: 100%;
+}
+
+.images .imgBox.add p {
+  align-items: flex-start;
+}
+.images .imgBox.add button {
+  background: var(--theme);
+  padding: 5px 8px;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+}
+
+.images .imgBox.add label {
+  background: var(--theme);
+  border-radius: 5px;
+  padding: 3px;
+}

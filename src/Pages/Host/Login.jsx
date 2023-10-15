@@ -25,7 +25,7 @@ const Login = () => {
     if(email,password){
       signInWithEmailAndPassword(fireAuth, email, password)
       .then((res)=>{
-        navigate(`/createProfile/${res.user.uid}`)
+        navigate(`/createProfile`)
       })
       .catch(()=>{
         setLoader(false);

@@ -295,9 +295,10 @@
 @media all and (max-width:650px){
   .introBox form{
     flex-direction: column;
-    width: auto;
     gap: 1rem;
     padding: 0;
+    width: 80%;
+    margin: auto;
     padding-top: 20px;
   }
   .introBox form .input_field{

@@ -5,7 +5,7 @@ import styles from '../../Styles/profile.module.css'
 import { useLoader } from '../../main';
 import { onAuthStateChanged } from 'firebase/auth';
 import { fireAuth, fireStoreDB, storageDB } from '../../Firebase/base';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { uploadBytes, ref as storageRef, getDownloadURL } from 'firebase/storage';
 
@@ -29,6 +29,9 @@ const CreateProfile = () => {
   const [tags, setTags] = useState([]);
   const [tagIn, setTagIn] = useState('');
   const tagSubs = useRef([]);
+  const [gallery, setGallery] = useState([]);
+  const [lastPostIndex, setLastPostIndex] = useState(0);
+  const [score, setScore] = useState(0);
 
   const [gender, setGender] = useState('not specified');
   const [sexPref, setSexPref] = useState('not specified');
@@ -126,10 +129,18 @@ const CreateProfile = () => {
 
             userDoc.cover && setCoverPreview(userDoc.cover);
             userDoc.profilePic && setProfilePicPreview(userDoc.profilePic);
-            setLoader(false);
+
+            getDoc(doc(fireStoreDB, 'Gallery/' + user.uid))
+              .then((posts) => {
+                setGallery(posts.data().posts.slice(0, 5))
+                setLastPostIndex(posts.data().posts.slice(0, 5).length - 1)
+                setLoader(false);
+                const tes = posts.data().posts.reduce((val,el)=> val + el.likes, 0);
+                console.log(tes)
+                // console.log(posts.data().posts.map((el)=> console.log(el, 'try')))
+              })
           })
           .catch((error) => navigate('/login'))
-        
       } else {
         navigate('/login');
       }
@@ -159,7 +170,7 @@ const CreateProfile = () => {
     onAuthStateChanged(fireAuth, async (user) => {
       if (user) {
         if (cover) {
-          await uploadBytes(storageRef(storageDB, 'HostsStorage' + cover.name + Date.now().toString()), cover)
+          await uploadBytes(storageRef(storageDB, 'HostsStorage/' + cover.name + Date.now().toString()), cover)
             .then((res) => {
               getDownloadURL(res.ref)
                 .then((imgURL) => {
@@ -172,7 +183,7 @@ const CreateProfile = () => {
             })
         }
         if (profilePic) {
-          await uploadBytes(storageRef(storageDB, 'HostsStorage' + profilePic.name + Date.now().toString()), profilePic)
+          await uploadBytes(storageRef(storageDB, 'HostsStorage/' + profilePic.name + Date.now().toString()), profilePic)
             .then((res) => {
               getDownloadURL(res.ref)
                 .then((imgURL) => {
@@ -258,17 +269,17 @@ const CreateProfile = () => {
     setTags(updatedTags)
   }
 
-
-
   const handleImage = (img, i) => {
     imageSet[i] = img;
     previewImageSet.current[i].src = URL.createObjectURL(img);
   }
 
-
   return (
     <>
       <Navbar props={{ type: 'min' }} />
+      <section className={styles.hostPanel}>
+
+      </section>
       <form className={styles.wrapper} onSubmit={e => { e.preventDefault(); updateProfile() }}>
         <section className={styles.coverBox} style={{ backgroundImage: `url(${coverPreview})` }}>
           <label htmlFor="addCoverImage" style={{ display: 'flex', width: '100%', height: '100%' }}>
@@ -324,14 +335,28 @@ const CreateProfile = () => {
             <input type="text" placeholder='your tags eg: freaky' value={tagIn} onChange={e => { setTagIn(e.target.value) }} /> <button type='button' onClick={addTag}> {icon('add')}</button>
           </div>
         </section>
-        <section className={styles.galleryBox}>
-          {[0, 0, 0, 0, 0].map((el, i) => (
-            <label htmlFor={`image${i}`}>
-              <sup className={styles.imgSheet} style={{ borderRadius: '10px' }}>{icon('add_a_photo')}</sup>
-              <input id={`image${i}`} onChange={e => { handleImage(e.target.files[0], i) }} type="file" style={{ display: 'none' }} />
-              <img src={coverPreview} ref={(obj) => { previewImageSet.current[i] = obj }} />
-            </label>
-          ))}
+        <section className={styles.galleryBoxHolder}>
+          <h3>Gallery</h3>
+          <section className={styles.galleryBox}>
+            {gallery.map((el, i) => (
+              i < 4 ?
+                el.type === 'image' ?
+                  <img src={el.media} /> :
+                  <video src={el.media} autoPlay muted loop></video>
+                : null
+            ))}
+            <Link to={`/createGallery`}>
+              {gallery.length > 0 &&
+                <>
+                  <img src={gallery[lastPostIndex].media} />
+                  <p>
+                    <span>Gallery</span>
+                    {icon('chevron_right')}
+                  </p>
+                </>
+              }
+            </Link>
+          </section>
         </section>
         <section className={styles.aboutBoxHolder}>
           <h3>About</h3>

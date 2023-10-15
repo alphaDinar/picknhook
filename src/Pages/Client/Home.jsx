@@ -11,7 +11,7 @@ import { getDocs, collection } from 'firebase/firestore';
 import { useLoader } from "../../main";
 
 const Home = () => {
-  const sample = "https://firebasestorage.googleapis.com/v0/b/smarthotel-7d5d0.appspot.com/o/HostsStorage_120424467_joy2.jpg1696954574352?alt=media&token=05121443-f1d8-4722-ad60-228a8dbca65a&_gl=1*d88afm*_ga*NjUzNzUwMTQ3LjE2OTMxNjk0NzE.*_ga_CW55HF8NVT*MTY5Njk1NDQyMC41My4xLjE2OTY5NTQ2NTQuNDcuMC4w"
+  const sample = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696773681/_120424467_joy2_a6y2kz.jpg';
 
   const [hostList, setHostList] = useState('');
   const {loader, setLoader} = useLoader();
@@ -93,7 +93,7 @@ const Home = () => {
         </section>
         <section className={styles.showBox}>
           {hostList && hostList.map((host, i) => (
-            <Link to={`/createProfile/${host[0]}`} key={i} className={styles.card}>
+            <Link to={`/viewProfile/${host[0]}`} key={i} className={styles.card}>
               <legend className="verified">{icon('verified')}</legend>
               <header>
                 <strong>{host[1].profile && host[1].profile[0].username} <sub></sub></strong>
@@ -105,7 +105,7 @@ const Home = () => {
                 <img src={sample} alt="" />
               </div>
               <small className="info">{host[1].profile && host[1].profile[0].bio}</small>
-              <button type="button">Read More</button>
+              <button type="button">View Profile </button>
             </Link>
           ))}
         </section>

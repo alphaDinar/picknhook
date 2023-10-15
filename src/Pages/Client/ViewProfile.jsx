@@ -1,254 +1,275 @@
+import { useEffect, useState } from 'react';
 import Navbar from '../../Components/Navbar';
 import { icon, iconFont } from '../../External/external';
 import styles from '../../Styles/profile.module.css'
+import { Link, useParams } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { fireStoreDB } from '../../Firebase/base';
+import { useLoader } from '../../main';
 
 const ViewProfile = () => {
   const cover = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696773681/_120424467_joy2_a6y2kz.jpg';
   const face = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696775658/profile-1640014292-4a26a41437da03f345e9f0ed8fa0d60e_mu37cj.jpg';
 
+  const [host, setHost] = useState('');
+  const { id } = useParams();
+  const { loader, setLoader } = useLoader();
+  const [gallery, setGallery] = useState([]);
+  const [lastPostIndex, setLastPostIndex] = useState(0);
+
+
+  useEffect(() => {
+    setLoader(true);
+    getDoc(doc(fireStoreDB, 'Hosts/' + id))
+      .then((res) => {
+        setHost(res.data())
+        getDoc(doc(fireStoreDB, 'Gallery/' + id))
+          .then((posts) => {
+            setGallery(posts.data().posts.slice(0, 5))
+            setLastPostIndex(posts.data().posts.slice(0, 5).length - 1)
+            setLoader(false);
+          })
+      })
+  }, [])
+
+
   return (
     <>
-      <Navbar props={{type: 'min'}} />
-      <section className={styles.wrapper}>
-        <section className={styles.coverBox} style={{ backgroundImage: `url(${cover}` }}>
-          <legend>
-            {icon('verified')}
-          </legend>
-          <img src={face} />
-        </section>
-        <section className={styles.infoBox}>
-          <p>
-            <strong>Austin Rems</strong>
-            <small>Kumasi, Ghana</small>
-            <span>
-              {iconFont('fa-brands fa-instagram', 'https://www.instagram.com/cristiano/?hl=en')}
-              {iconFont('fa-brands fa-x-twitter', 'https://twitter.com/home')}
-              {iconFont('fa-brands fa-tiktok')}
-            </span>
-          </p>
-          <p>
-            <a href=''>{icon('phone_iphone')} +00000000 </a>
-            <a href="">{icon('mail')} Austin@gmail.com</a>
-          </p>
-        </section>
-        <section className={styles.bioBox}>
-          <h3>Bio</h3>
-          <small>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Labore necessitatibus quae fuga ducimus dignissimos incidunt corporis! Similique magni officiis, culpa laborum, eligendi ratione architecto adipisci neque vero doloremque assumenda esse.
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Labore necessitatibus quae fuga ducimus dignissimos incidunt corporis! Similique magni officiis, culpa laborum, eligendi ratione architecto adipisci neque vero doloremque assumenda esse.
-          </small>
-        </section>
-        <section className={styles.tagBox}>
-          <sub>good</sub>
-          <sub>convertionalist</sub>
-          <sub>longer</sub>
-          <sub>time</sub>
-          <sub>good</sub>
-          <sub>convertionalist</sub>
-          <sub>longer</sub>
-          <sub>time</sub>
-          <sub>good</sub>
-          <sub>convertionalist</sub>
-          <sub>longer</sub>
-          <sub>time</sub>
-          <sub>good</sub>
-          <sub>convertionalist</sub>
-          <sub>longer</sub>
-          <sub>time</sub>
-          <sub>good</sub>
-          <sub>convertionalist</sub>
-          <sub>longer</sub>
-          <sub>time</sub>
-        </section>
-        <section className={styles.galleryBox}>
-          <img src={cover} />
-          <img src={cover} />
-          <img src={cover} />
-          <img src={cover} />
-          <img src={cover} />
-        </section>
-        <section className={styles.aboutBoxHolder}>
-          <h3>About</h3>
-          <section className={styles.aboutBox}>
-            <section>
-              <p>
-                <strong>Gender</strong>
-                <span>Female</span>
-              </p>
-              <p>
-                <strong>Sexual preference</strong>
-                <span>Straight</span>
-              </p>
-              <p>
-                <strong>Languages</strong>
-                <span>English, French</span>
-              </p>
-              <p>
-                <strong>Age</strong>
-                <span>29 years</span>
-              </p>
-              <p>
-                <strong>Ethnic Group</strong>
-                <span>Other</span>
-              </p>
-              <p>
-                <strong>Hair Color</strong>
-                <span>Black</span>
-              </p>
-              <p>
-                <strong>Eye Color</strong>
-                <span>Black</span>
-              </p>
-              <p>
-                <strong>Hobbies</strong>
-                <span>Female</span>
-              </p>
+      <Navbar props={{ type: 'min' }} />
+      {host &&
+        <section className={styles.wrapper}>
+          <section className={styles.coverBox} style={{ backgroundImage: `url(${host.cover}` }}>
+            <legend>
+              {icon('verified')}
+            </legend>
+            <img src={host.profilePic} />
+          </section>
+          <section className={styles.infoBox}>
+            <p>
+              <strong>{host.profile[0].username}</strong>
+              <small>{host.profile[0].location}</small>
+              <span>
+                {iconFont('fa-brands fa-instagram', `${host.profile[0].instagram}`)}
+                {iconFont('fa-brands fa-x-twitter', `${host.profile[0].xSpace}`)}
+                {iconFont('fa-brands fa-tiktok', `${host.profile[0].tiktok}`)}
+              </span>
+            </p>
+            <p>
+              <a href=''>{icon('phone_iphone')} {host.profile[0].phone || '--'} </a>
+              <a href="">{icon('mail')} {host.profile[0].email || '--'}</a>
+            </p>
+          </section>
+          <section className={styles.bioBox}>
+            <h3>Bio</h3>
+            <small>
+              {host.profile[0].bio}
+            </small>
+          </section>
+          {host.tags.length > 0 &&
+            <section className={styles.tagBox}>
+              {host.tags.map((tag) => (
+                <sub>{tag}</sub>
+              ))}
             </section>
-            <section>
-              <p>
-                <strong>Breast Cup</strong>
-                <span>Female</span>
-              </p>
-              <p>
-                <strong>Shaved</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Implants</strong>
-                <span>Breast, other</span>
-              </p>
-              <p>
-                <strong>Tattoos</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Piercings</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Body Size</strong>
-                <span>Normal</span>
-              </p>
-              <p>
-                <strong>Height</strong>
-                <span>150cm</span>
-              </p>
-              <p>
-                <strong>Weight</strong>
-                <span>40kg</span>
-              </p>
+          }
+          <section className={styles.galleryBoxHolder}>
+            <h3>Gallery</h3>
+            <section className={styles.galleryBox}>
+              {gallery.map((el, i) => (
+                i < 4 ?
+                  el.type === 'image' ?
+                    <img src={el.media} /> :
+                    <video src={el.media} autoPlay muted loop></video>
+                  : null
+              ))}
+              <Link to={`/viewGallery/${id}`}>
+                {gallery.length > 0 &&
+                  <>
+                    <img src={gallery[lastPostIndex].media} />
+                    <p>
+                      <span>View More</span>
+                      {icon('chevron_right')}
+                    </p>
+                  </>
+                }
+              </Link>
             </section>
           </section>
-        </section>
-        <section className={styles.aboutBoxHolder}>
-          <h3>Services</h3>
-          <section className={styles.aboutBox}>
-            <section>
-              <p>
-                <strong>Clients</strong>
-                <span>Men,Women</span>
-              </p>
-              <p>
-                <strong>Outcall(national)</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Incall</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Straight Sex</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Massage</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Oral Sex(giving)</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Oral Sex(taking)</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Anal Sex(giving)</strong>
-                <span>Yes</span>
-              </p>
-            </section>
-            <section>
-              <p>
-                <strong>French Kissing</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Fetish and Fantasy</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>BDSM</strong>
-                <span>No</span>
-              </p>
-              <p>
-                <strong>Striptease(private)</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Striptease(group)</strong>
-                <span>Yes</span>
-              </p>
-              <p>
-                <strong>Height</strong>
-                <span>150cm</span>
-              </p>
-              <p>
-                <strong>Weight</strong>
-                <span>40kg</span>
-              </p>
+          <section className={styles.aboutBoxHolder}>
+            <h3>About</h3>
+            <section className={styles.aboutBox}>
+              <section>
+                <p>
+                  <strong>Gender</strong>
+                  <span>{host.profile[0].gender || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Sexual preference</strong>
+                  <span>{host.profile[0].SexPref || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Languages</strong>
+                  <span>{host.profile[0].languages || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Age</strong>
+                  <span>{host.profile[0].age || 'not specified'} years</span>
+                </p>
+                <p>
+                  <strong>Ethnic Group</strong>
+                  <span>{host.profile[0].ethnic || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Hair Color</strong>
+                  <span>{host.profile[0].hair || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Eye Color</strong>
+                  <span>{host.profile[0].eye || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Hobbies</strong>
+                  <span>{host.profile[0].hobby || 'not specified'}</span>
+                </p>
+              </section>
+              <section>
+                <p>
+                  <strong>Breast Cup</strong>
+                  <span>{host.profile[0].breast || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Shaved</strong>
+                  <span>{host.profile[0].shaved || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Implants</strong>
+                  <span>{host.profile[0].implants || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Tattoos</strong>
+                  <span>{host.profile[0].tattoos || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Piercings</strong>
+                  <span>{host.profile[0].pierce || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Body Size</strong>
+                  <span>{host.profile[0].body || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Height</strong>
+                  <span>{host.profile[0].height || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Weight</strong>
+                  <span>{host.profile[0].weight || 'not specified'}</span>
+                </p>
+              </section>
             </section>
           </section>
-        </section>
+          <section className={styles.aboutBoxHolder}>
+            <h3>Services</h3>
+            <section className={styles.aboutBox}>
+              <section>
+                <p>
+                  <strong>Clients</strong>
+                  <span>{host.profile[0].clients || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Outcall(national)</strong>
+                  <span>{host.profile[0].outcall || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Incall</strong>
+                  <span>{host.profile[0].incall || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Straight Sex</strong>
+                  <span>{host.profile[0].straightSex || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Massage</strong>
+                  <span>{host.profile[0].massage || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Oral Sex(giving)</strong>
+                  <span>{host.profile[0].oralG || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Oral Sex(taking)</strong>
+                  <span>{host.profile[0].oralT || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Anal Sex(giving)</strong>
+                  <span>{host.profile[0].anal || 'not specified'}</span>
+                </p>
+              </section>
+              <section>
+                <p>
+                  <strong>French Kissing</strong>
+                  <span>{host.profile[0].french || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Fetish and Fantasy</strong>
+                  <span>{host.profile[0].fetish || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>BDSM</strong>
+                  <span>{host.profile[0].bdsm || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Striptease(private)</strong>
+                  <span>{host.profile[0].stripP || 'not specified'}</span>
+                </p>
+                <p>
+                  <strong>Striptease(group)</strong>
+                  <span>{host.profile[0].stripG || 'not specified'}</span>
+                </p>
+              </section>
+            </section>
+          </section>
 
-        <section className={styles.priceBox}>
-          <h3>Pricing</h3>
-          <section>
-            <p>
-              <span> {icon('hourglass')}  1 hour</span>
-              <sub></sub>
-              <strong>100 USD</strong>
-            </p>
-            <p>
-              <span> {icon('hourglass')}  extra hour</span>
-              <sub></sub>
-              <strong>50 USD</strong>
-            </p>
-            <p>
-              <span> {icon('hourglass')}  4 hour</span>
-              <sub></sub>
-              <strong>400 USD</strong>
-            </p>
-            <p>
-              <span> {icon('hourglass')}  8 hour</span>
-              <sub></sub>
-              <strong>450 USD</strong>
-            </p>
-            <p>
-              <span> {icon('hourglass')}  24 hour</span>
-              <sub></sub>
-              <strong>500 USD</strong>
-            </p>
-            <p>
-              <span style={{color:'var(--theme)'}}> Payments</span>
-              <sub></sub>
-              <strong style={{color:'var(--theme)'}}>Cash</strong>
-            </p>
+          <section className={styles.priceBox}>
+            <h3>Pricing</h3>
+            <section>
+              <p>
+                <span> {icon('hourglass')}  1 hour</span>
+                <sub></sub>
+                <strong>{host.payment[0].price1 || '-'} USD</strong>
+              </p>
+              <p>
+                <span> {icon('hourglass')}  extra hour</span>
+                <sub></sub>
+                <strong>{host.payment[0].priceExtra || '-'} USD</strong>
+              </p>
+              <p>
+                <span> {icon('hourglass')}  4 hour</span>
+                <sub></sub>
+                <strong>{host.payment[0].price4 || '-'} USD</strong>
+              </p>
+              <p>
+                <span> {icon('hourglass')}  8 hour</span>
+                <sub></sub>
+                <strong>{host.payment[0].price8 || '-'} USD</strong>
+              </p>
+              <p>
+                <span> {icon('hourglass')}  24 hour</span>
+                <sub></sub>
+                <strong>{host.payment[0].price24 || '-'} USD</strong>
+              </p>
+              <p>
+                <span style={{ color: 'var(--theme)' }}> Payments</span>
+                <sub></sub>
+                <strong style={{ color: 'var(--theme)' }}>Cash</strong>
+              </p>
+            </section>
+          </section>
+          <section className={styles.contactBox}>
+            ascascas
           </section>
         </section>
-        <section className={styles.contactBox}>
-          ascascas
-        </section>
-      </section>
+      }
     </>
 
   );

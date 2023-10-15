@@ -18,31 +18,38 @@ const Register = () => {
   const { loader, setLoader } = useLoader();
 
   const createUser = () => {
-    if(email, phone){
-      if(password.length > 7){
+    if (email, phone) {
+      if (password.length > 7) {
         if (password === confirmPassword) {
           setLoader(true);
           createUserWithEmailAndPassword(fireAuth, email, password)
-          .then((res)=>{
-            console.log('mexes')
-            setDoc(doc(fireStoreDB, 'Hosts/' + res.user.uid),{
-              email : res.user.email,
-              phone : phone,
-              profile : [{}],
-              payment : [{}],
-              tags : [],
+            .then((res) => {
+              console.log('mexes')
+              setDoc(doc(fireStoreDB, 'Gallery/' + res.user.uid), {
+                posts: []
+              })
+                .then(() => {
+                  setDoc(doc(fireStoreDB, 'Hosts/' + res.user.uid), {
+                    email: res.user.email,
+                    phone: phone,
+                    profile: [{}],
+                    payment: [{}],
+                    tags: [],
+                  })
+                    .then(() => navigate('/login'))
+                    .catch((error) => console.log(error))
+                })
+                .catch((error) => console.log(error))
             })
-            .then(()=>navigate('/login'))
-            .catch((error)=>console.log(error))
-          })
-          .catch((error)=>{
-            setLoader(false);
-            setErrorText('Email already in use');
-          })
-        }else{
+            .catch((error) => {
+              console.log(error)
+              setLoader(false);
+              setErrorText('Email already in use');
+            })
+        } else {
           setErrorText('Passwords don"t match')
         }
-      }else{
+      } else {
         setErrorText('Password must be at least 8 characters')
       }
     }
@@ -61,7 +68,7 @@ const Register = () => {
           </p>
         </section>
         <section className={styles.right}>
-          <form onSubmit={e => { e.preventDefault()}}>
+          <form onSubmit={e => { e.preventDefault() }}>
             <strong>Register <sub></sub></strong>
             {errorText &&
               <small style={{ padding: '5px', background: 'var(--theme)', color: 'wheat', borderRadius: '3px' }}>
