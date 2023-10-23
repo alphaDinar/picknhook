@@ -14,8 +14,8 @@ const PremiumAccount = () => {
           <article className='premiumInfo'>
             <p>{icon('phishing')} <span>Global Exposure</span> </p>
             <p>{icon('phishing')} <span>Top ranking in your city</span> </p>
-            <p>{icon('phishing')} <span>Post 5 more on your gallery</span> </p>
-            <p>{icon('phishing')} <span>Post videos</span> </p>
+            <p>{icon('phishing')} <span>Post 2 more image on your gallery</span> </p>
+            <p>{icon('phishing')} <span>Post 3 videos on gallery</span> </p>
           </article>
         </section>
 
@@ -30,7 +30,17 @@ const PremiumAccount = () => {
           </article>
         </section>
 
-
+        <section className='premiumContentBox'>
+          <strong style={pageHeaderStyle}>Diamond Account<sub></sub></strong>
+          <article className='premiumInfo'>
+            <p>{icon('phishing')} <span>Global Exposure</span> </p>
+            <p>{icon('phishing')} <span>Top ranking in your city</span> </p>
+            <p>{icon('phishing')} <span>Post unlimited images</span> </p>
+            <p>{icon('phishing')} <span>Post unlimited videos</span> </p>
+            <p>{icon('phishing')} <span>Instagram link on profile</span> </p>
+            <p>{icon('phishing')} <span>tiktok link on profile</span> </p>
+          </article>
+        </section>
       </section>
     </>
   );

@@ -157,7 +157,7 @@ const ViewProfile = () => {
                   <span>{host.profile[0].pierce || 'not specified'}</span>
                 </p>
                 <p>
-                  <strong>Body Size</strong>
+                  <strong>Body Type</strong>
                   <span>{host.profile[0].body || 'not specified'}</span>
                 </p>
                 <p>
