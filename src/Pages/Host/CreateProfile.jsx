@@ -262,7 +262,6 @@ const CreateProfile = () => {
     setTags(updatedTags)
   }
 
-
   const logoutUser = () => {
     setLoader(true)
     signOut(fireAuth).then(() => {

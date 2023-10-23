@@ -50,6 +50,7 @@ const Home = () => {
           }
         );
       } else {
+        alert('Turn on location');
         console.log("Geolocation is not available in this browser.");
       }
 
