@@ -3,14 +3,14 @@ import Navbar from '../../Components/Navbar';
 import { icon, iconFont, sortPostsByTime } from '../../External/external';
 import styles from '../../Styles/profile.module.css'
 import { useLoader } from '../../main';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { fireAuth, fireStoreDB, storageDB } from '../../Firebase/base';
 import { Link, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { uploadBytes, ref as storageRef, getDownloadURL } from 'firebase/storage';
 
 const CreateProfile = () => {
-  const { loader, setLoader } = useLoader();
+  const { setLoader } = useLoader();
   const navigate = useNavigate();
 
   const [cover, setCover] = useState('');
@@ -25,6 +25,7 @@ const CreateProfile = () => {
   const [instagram, setInstagram] = useState('');
   const [xSpace, setXSpace] = useState('');
   const [tiktok, setTiktok] = useState('');
+  const [site, setSite] = useState('');
   const [bio, setBio] = useState('');
   const [tags, setTags] = useState([]);
   const [tagIn, setTagIn] = useState('');
@@ -72,22 +73,34 @@ const CreateProfile = () => {
 
   const [imageSet, setImage] = useState(['', '', '', '', '']);
   const previewImageSet = useRef([]);
+  const [userExists, setUserExists] = useState(false);
 
   useEffect(() => {
     setLoader(true);
+    // const user = fireAuth.currentUser;
     onAuthStateChanged(fireAuth, (user) => {
       if (user) {
+        console.log(user.email)
         getDoc(doc(fireStoreDB, 'Hosts/' + user.uid))
           .then((res) => {
             const userDoc = res.data()
             userDoc.phone && setPhone(userDoc.phone);
-            userDoc.profile[0].username && setUsername(userDoc.profile[0].username);
+            if (userDoc.profile[0].username) {
+              setUsername(userDoc.profile[0].username);
+              setUserExists(true);
+              console.log('me')
+            } else {
+              setUserExists(false)
+              console.log('fail')
+            }
+
             userDoc.profile[0].location && setLocation(userDoc.profile[0].location);
             userDoc.profile[0].phone && setPhone(userDoc.profile[0].phone);
             userDoc.profile[0].email && setEmail(userDoc.profile[0].email);
             userDoc.profile[0].instagram && setInstagram(userDoc.profile[0].instagram);
             userDoc.profile[0].xSpace && setXSpace(userDoc.profile[0].xSpace);
             userDoc.profile[0].tiktok && setTiktok(userDoc.profile[0].tiktok);
+            userDoc.profile[0].site && setSite(userDoc.profile[0].site);
             userDoc.profile[0].bio && setBio(userDoc.profile[0].bio);
 
             userDoc.profile[0].gender && setGender(userDoc.profile[0].gender);
@@ -130,127 +143,110 @@ const CreateProfile = () => {
             userDoc.cover && setCoverPreview(userDoc.cover);
             userDoc.profilePic && setProfilePicPreview(userDoc.profilePic);
 
-
             setGallery(userDoc.posts.sort(sortPostsByTime).slice(0, 5))
             setLastPostIndex(userDoc.posts.slice(0, 5).length - 1)
             setLoader(false);
-            const tes = userDoc.posts.reduce((val, el) => val + el.likes, 0);
-            console.log(userDoc)
           })
           .catch((error) => console.log(error))
       } else {
         navigate('/login');
       }
+
     })
   }, [])
 
 
-  // console.log(profilePicPreview)
-
-
-  const handleImages = () => {
-    // console.log('images')
-    const gallerySet = [];
-    gallerySet.push({ 'cover': cover });
-    gallerySet.push({ 'profile': profile });
-
-    console.log(gallerySet)
-    gallerySet.map((el) => {
-      console.log(Object.keys(el))
-      console.log(Object.values(el))
-    })
-
-  }
-
   const updateProfile = () => {
     setLoader(true);
-    onAuthStateChanged(fireAuth, async (user) => {
-      if (user) {
-        if (cover) {
-          await uploadBytes(storageRef(storageDB, 'HostsStorage/' + cover.name + Date.now().toString()), cover)
-            .then((res) => {
-              getDownloadURL(res.ref)
-                .then((imgURL) => {
-                  updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
-                    cover: imgURL
-                  })
-                    .then(setLoader(false))
-                    .catch((error) => console.log(error))
+    const user = fireAuth.currentUser
+    if (user) {
+      if (cover) {
+        uploadBytes(storageRef(storageDB, 'HostsStorage/' + cover.name + Date.now().toString()), cover)
+          .then((res) => {
+            getDownloadURL(res.ref)
+              .then((imgURL) => {
+                updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
+                  cover: imgURL
                 })
-            })
-        }
-        if (profilePic) {
-          await uploadBytes(storageRef(storageDB, 'HostsStorage/' + profilePic.name + Date.now().toString()), profilePic)
-            .then((res) => {
-              getDownloadURL(res.ref)
-                .then((imgURL) => {
-                  updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
-                    profilePic: imgURL
+                  .then(()=>{
+                    setUserExists(true)
+                    setLoader(false)
                   })
-                    .then(setLoader(false))
-                    .catch((error) => console.log(error))
-                })
-            })
-        }
-
-        updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
-          profile: [{
-            username: username,
-            location: location,
-            phone: phone,
-            email: email,
-            instagram: instagram,
-            xSpace: xSpace,
-            tiktok: tiktok,
-            bio: bio,
-            gender: gender,
-            sexPref: sexPref,
-            languages: languages,
-            age: age,
-            ethnic: ethnic,
-            hair: hair,
-            eye: eye,
-            hobby: hobby,
-            breast: breast,
-            shaved: shaved,
-            implants: implants,
-            tattoos: tattoos,
-            pierce: pierce,
-            body: body,
-            height: height,
-            weight: weight,
-            clients: clients,
-            outcall: outcall,
-            incall: incall,
-            straightSex: straightSex,
-            massage: massage,
-            oralG: oralG,
-            oralT: oralT,
-            anal: anal,
-            french: french,
-            fetish: fetish,
-            bdsm: BDSM,
-            stripP: stripP,
-            stripG: stripG
-          }],
-          payment: [{
-            price1: price1,
-            priceExtra: priceExtra,
-            price4: price4,
-            price8: price8,
-            price24: price24,
-            payment: payment
-          }],
-          tags: tags,
-        })
-          .then(() => {
-            console.log('changed')
-            !cover && setLoader(false);
+                  .catch((error) => console.log(error))
+              })
           })
-          .catch((error) => { console.log(error); setLoader(false) })
       }
-    })
-    console.log('me')
+      if (profilePic) {
+        uploadBytes(storageRef(storageDB, 'HostsStorage/' + profilePic.name + Date.now().toString()), profilePic)
+          .then((res) => {
+            getDownloadURL(res.ref)
+              .then((imgURL) => {
+                updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
+                  profilePic: imgURL
+                })
+                  .then(setLoader(false))
+                  .catch((error) => console.log(error))
+              })
+          })
+      }
+
+      updateDoc(doc(fireStoreDB, 'Hosts/' + user.uid), {
+        profile: [{
+          username: username,
+          location: location,
+          phone: phone,
+          email: email,
+          instagram: instagram,
+          xSpace: xSpace,
+          tiktok: tiktok,
+          site : site,
+          bio: bio,
+          gender: gender,
+          sexPref: sexPref,
+          languages: languages,
+          age: age,
+          ethnic: ethnic,
+          hair: hair,
+          eye: eye,
+          hobby: hobby,
+          breast: breast,
+          shaved: shaved,
+          implants: implants,
+          tattoos: tattoos,
+          pierce: pierce,
+          body: body,
+          height: height,
+          weight: weight,
+          clients: clients,
+          outcall: outcall,
+          incall: incall,
+          straightSex: straightSex,
+          massage: massage,
+          oralG: oralG,
+          oralT: oralT,
+          anal: anal,
+          french: french,
+          fetish: fetish,
+          bdsm: BDSM,
+          stripP: stripP,
+          stripG: stripG
+        }],
+        payment: [{
+          price1: price1,
+          priceExtra: priceExtra,
+          price4: price4,
+          price8: price8,
+          price24: price24,
+          payment: payment
+        }],
+        tags: tags,
+      })
+        .then(() => {
+          console.log('changed')
+          !cover && setLoader(false);
+        })
+        .catch((error) => { console.log(error); setLoader(false) })
+    }
   }
 
   const addTag = () => {
@@ -266,16 +262,22 @@ const CreateProfile = () => {
     setTags(updatedTags)
   }
 
-  const handleImage = (img, i) => {
-    imageSet[i] = img;
-    previewImageSet.current[i].src = URL.createObjectURL(img);
+
+  const logoutUser = () => {
+    setLoader(true)
+    signOut(fireAuth).then(() => {
+      setLoader(false)
+      navigate('/login')
+    }).catch((error) => {
+      console.log(error)
+    });
   }
 
   return (
     <>
       <Navbar props={{ type: 'min' }} />
       <section className={styles.hostPanel}>
-
+        <button onClick={logoutUser}>{icon('power_settings_new')}</button>
       </section>
       <form className={styles.wrapper} onSubmit={e => { e.preventDefault(); updateProfile() }}>
         <section className={styles.coverBox} style={{ backgroundImage: `url(${coverPreview})` }}>
@@ -304,18 +306,24 @@ const CreateProfile = () => {
         <section className={styles.infoBox}>
           <p>
             <strong><input type="text" placeholder='Username' value={username} onChange={e => { setUsername(e.target.value) }} required /></strong>
+            <small>
+              <select style={{width:'100%'}}>
+                <option>Ghana</option>
+              </select>
+            </small>
             <small><input type="text" placeholder='Location' value={location} onChange={e => { setLocation(e.target.value) }} required /></small>
-          </p>
-          <p>
-            <a >{icon('phone_iphone')} <input type="tel" placeholder='Phone' value={phone} onChange={e => { setPhone(e.target.value) }} required /> </a>
-            <a >{icon('mail')} <input type="email" placeholder='Email (optional)' value={email} onChange={e => { setEmail(e.target.value) }} /></a>
+            </p>
+            <p>
+            <a>{icon('phone_iphone')} <input type="tel" placeholder='Phone' value={phone} onChange={e => { setPhone(e.target.value) }} required /> </a>
+            <a>{icon('mail')} <input type="email" placeholder='Email (optional)' value={email} onChange={e => { setEmail(e.target.value) }} /></a>
           </p>
         </section>
         <section className={styles.infoBox}>
           <p>
-            <span>{iconFont('fa-brands fa-instagram')} <input type="text" value={instagram} onChange={e => { setInstagram(e.target.value) }} placeholder='optional' /> </span>
-            <span>{iconFont('fa-brands fa-x-twitter')} <input type="text" value={xSpace} onChange={e => { setXSpace(e.target.value) }} placeholder='optional' /> </span>
-            <span>{iconFont('fa-brands fa-tiktok')} <input type="text" value={tiktok} onChange={e => { setTiktok(e.target.value) }} placeholder='optional' /> </span>
+            <span>{iconFont('fa-brands fa-instagram')} <input type="text" value={instagram} onChange={e => { setInstagram(e.target.value) }} placeholder='enter account link' /> </span>
+            <span>{iconFont('fa-brands fa-x-twitter')} <input type="text" value={xSpace} onChange={e => { setXSpace(e.target.value) }} placeholder='enter account link' /> </span>
+            <span>{iconFont('fa-brands fa-tiktok')} <input type="text" value={tiktok} onChange={e => { setTiktok(e.target.value) }} placeholder='enter account link' /> </span>
+            <span>{iconFont('fa-solid fa-desktop')} <input type="text" value={site} onChange={e => { setSite(e.target.value) }} placeholder='enter website link' /> </span>
           </p>
         </section>
         <section className={styles.bioBox}>
@@ -326,7 +334,7 @@ const CreateProfile = () => {
         </section>
         <section className={styles.tagBox}>
           {tags.map((el, i) => (
-            <sub onClick={() => { remTag(i) }}>{el} {icon('delete')}</sub>
+            <sub key={i} onClick={() => { remTag(i) }}>{el} {icon('delete')}</sub>
           ))}
           <div>
             <input type="text" placeholder='your tags eg: freaky' value={tagIn} onChange={e => { setTagIn(e.target.value) }} /> <button type='button' onClick={addTag}> {icon('add')}</button>
@@ -338,14 +346,17 @@ const CreateProfile = () => {
             {gallery.map((el, i) => (
               i < 4 ?
                 el.type === 'image' ?
-                  <img src={el.media} /> :
-                  <video src={el.media} autoPlay muted loop></video>
+                  <img key={i} src={el.media} /> :
+                  <video key={i} src={el.media} autoPlay muted loop></video>
                 : null
             ))}
             <Link to={`/createGallery`}>
               {gallery.length > 0 &&
                 <>
-                  <img src={gallery[lastPostIndex].media} />
+                  {gallery[lastPostIndex].type === 'image' ?
+                    <img src={gallery[lastPostIndex].media} /> :
+                    <video src={gallery[lastPostIndex].media}></video>
+                  }
                   <p>
                     <span>Gallery</span>
                     {icon('chevron_right')}
@@ -355,7 +366,10 @@ const CreateProfile = () => {
             </Link>
           </section>
           <small>
-            <Link to={`/createGallery`}>Add To gallery</Link>
+            {userExists ?
+              <Link to={"/createGallery"}>Gallery</Link> :
+              <span>Save Profile to get Gallery</span>
+            }
           </small>
         </section>
         <section className={styles.aboutBoxHolder}>

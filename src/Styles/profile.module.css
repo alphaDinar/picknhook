@@ -5,6 +5,29 @@
   gap: 2rem 0;
   padding: 3vh 0;
 }
+
+.hostPanel{
+  width: 100%;
+  margin-top: 2vh;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hostPanel button{
+  background: tomato;
+  color: white;
+  padding: 5px;
+  border-radius: 3px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+
+
 .coverBox{
   height: 30vh;
   border-radius: 10px;
@@ -49,13 +72,6 @@
   justify-content: center;
 }
 
-.hostPanel{
-  width: 100%;
-  height: 50px;
-  margin-top: 2vh;
-  background: black;
-}
-
 .infoBox{
   display: flex;
   justify-content: space-between;
@@ -63,6 +79,7 @@
 .infoBox p{
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 }
 .infoBox strong{
   font-size: 1.3rem;

@@ -3,7 +3,7 @@ import Navbar from "../../Components/Navbar";
 import styles from "../../Styles/register.module.css";
 import { useEffect, useState } from "react";
 import { fireAuth, fireStoreDB } from "../../Firebase/base";
-import { onAuthStateChanged, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getDocs, setDoc, collection, doc } from "firebase/firestore";
 import { useLoader } from "../../main";
 import { icon } from "../../External/external";
@@ -14,23 +14,24 @@ const Login = () => {
   const [errorText, setErrorText] = useState('');
   const navigate = useNavigate();
 
-  const { loader, setLoader } = useLoader();
+  const { setLoader } = useLoader();
 
   useEffect(() => {
     setLoader(false)
+    // console.log(fireAuth.currentUser.uid)
   }, [])
 
   const loginUser = () => {
     setLoader(true);
-    if(email,password){
+    if (email, password) {
       signInWithEmailAndPassword(fireAuth, email, password)
-      .then((res)=>{
-        navigate(`/createProfile`)
-      })
-      .catch(()=>{
-        setLoader(false);
-        setErrorText('Invalid email or password');
-      })
+        .then((res) => {
+          navigate(`/createProfile`)
+        })
+        .catch(() => {
+          setLoader(false);
+          setErrorText('Invalid email or password');
+        })
     }
   }
 

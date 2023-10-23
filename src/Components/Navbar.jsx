@@ -10,8 +10,9 @@ const Navbar = ({ props }) => {
       {type === 'max' &&
         <>
           <nav>
-            <a href="">New Escorts</a>
-            <a href="">Premium Ads.</a>
+            <Link>Premium Ads.</Link>
+            <Link to={'/newEscorts'}>New Escorts</Link>
+            <Link to={'/premiumEscorts'}>Premium Escorts</Link>
             <a href="">Contact Us </a>
           </nav>
           <Link to={'/register'} id="register_a">Register For free</Link>

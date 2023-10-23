@@ -1,21 +1,28 @@
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../Components/Navbar";
 import styles from "../../Styles/register.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fireAuth, fireStoreDB } from "../../Firebase/base";
-import { onAuthStateChanged, createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { onAuthStateChanged, createUserWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
 import { getDocs, setDoc, collection, doc } from "firebase/firestore";
 import { useLoader } from "../../main";
+import { countryList } from "../../External/external";
 
 const Register = () => {
+  const [errorText, setErrorText] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [errorText, setErrorText] = useState('');
+  const [countries, setCountries] = useState([]);
+  const [country, setCountry] = useState('');
   const navigate = useNavigate();
 
-  const { loader, setLoader } = useLoader();
+  const { setLoader } = useLoader();
+
+  useEffect(() => {
+    setCountries(countryList())
+  }, [])
 
   const createUser = () => {
     if (email, phone) {
@@ -26,14 +33,21 @@ const Register = () => {
             .then((res) => {
               console.log('mexes')
               setDoc(doc(fireStoreDB, 'Hosts/' + res.user.uid), {
+                id : res.user.uid,
                 email: res.user.email,
                 phone: phone,
                 profile: [{}],
                 payment: [{}],
                 posts: [],
                 tags: [],
+                class: 'regular',
+                country : country,
+                region : '',
+                createdOn: Date.now()
               })
-                .then(() => navigate('/login'))
+                .then(() => {
+                  navigate('/login')
+                })
                 .catch((error) => console.log(error))
             })
             .catch((error) => {
@@ -63,7 +77,7 @@ const Register = () => {
           </p>
         </section>
         <section className={styles.right}>
-          <form onSubmit={e => { e.preventDefault() }}>
+          <form onSubmit={e => { e.preventDefault(); createUser() }}>
             <strong>Register <sub></sub></strong>
             {errorText &&
               <small style={{ padding: '5px', background: 'var(--theme)', color: 'wheat', borderRadius: '3px' }}>
@@ -84,11 +98,20 @@ const Register = () => {
                 <input type="password" value={confirmPassword} onChange={e => { setConfirmPassword(e.target.value) }} required />
               </div>
               <div>
+                <span>Country</span>
+                <select onChange={(e)=>{setCountry(e.target.value)}} required>
+                <option value="" hidden>Select Country</option>
+                  {countries.map((el,i)=>(
+                    <option key={i} value={el}>{el}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <span>Phone</span>
                 <input type="tel" value={phone} onChange={e => { setPhone(e.target.value) }} placeholder="may be asked in case of forgotten email" required />
               </div>
             </section>
-            <button type="submit" onClick={createUser}>Register</button>
+            <button type="submit">Register</button>
             <Link to={'/login'}>
               <small>Do you already have an account? Login here</small>
             </Link>

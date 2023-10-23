@@ -4,29 +4,58 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { Link } from "react-router-dom";
-import { icon, sortPostsByTime } from "../../External/external";
+import { countryList, icon, sortHostByTime, sortPostsByTime } from "../../External/external";
 import { useEffect, useState } from "react";
 import { fireStoreDB } from '../../Firebase/base';
 import { getDocs, collection } from 'firebase/firestore';
 import { useLoader } from "../../main";
+import axios from "axios";
+import HostList from "../../Components/HostList";
 
 const Home = () => {
   const sample = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696773681/_120424467_joy2_a6y2kz.jpg';
 
   const [hostList, setHostList] = useState('');
-  const [galleryList, setGalleryList] = useState([]);
-  const {loader, setLoader} = useLoader();
+  const { setLoader } = useLoader();
+  const [countries, setCountries] = useState([]);
 
   useEffect(() => {
     setLoader(true)
-    getDocs(collection(fireStoreDB, 'Hosts/'))
-      .then((res) => {
-        const hostListTemp = res.docs.map((el)=> [el.id, el.data()]);
-        const galleryListTemp = res.docs.map((el)=> el.data().posts.sort(sortPostsByTime))
-        setHostList(hostListTemp)
-        setGalleryList(galleryListTemp)
-        setLoader(false);
-      })
+    const getCountry = () => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            if (lat, lon) {
+              const url = `https://nominatim.openstreetmap.org/reverse.php?lat=${lat}&lon=${lon}&zoom=3&format=jsonv2`;
+              axios.get(url)
+                .then((countryRes) => {
+                  const userCountry = countryRes.data.name;
+                  console.log(userCountry)
+                  getDocs(collection(fireStoreDB, 'Hosts/'))
+                    .then((res) => {
+                      const hostListTemp = res.docs.map((el) => el.data());
+                      setHostList(hostListTemp.filter((el) => el.country === userCountry).sort(sortHostByTime))
+                      setCountries(countryList())
+                      setLoader(false)
+                    })
+                    .catch((error) => console.log(error))
+                })
+                .catch((error) => console.log(error))
+            }
+          },
+          (error) => {
+            console.log(error)
+          }
+        );
+      } else {
+        console.log("Geolocation is not available in this browser.");
+      }
+
+    }
+    getCountry();
+
   }, [])
 
   return (
@@ -35,35 +64,31 @@ const Home = () => {
       <section className={styles.wrapper}>
         <section className={styles.introBox}>
           <section className={styles.right}>
-            <Swiper loop={true} speed={1000} autoplay={{ delay: 3000 }} modules={[Autoplay]} className={styles.introSwiper}>
-              <SwiperSlide className={styles.introSlide} style={{ backgroundImage: `url(${sample})` }}>
-                <a href="">
-                  <strong>Sandra</strong>
-                  <span> <i className="material-symbols-outlined">location_on</i>  Accra</span>
-                  <sub></sub>
-                </a>
-              </SwiperSlide>
-              <SwiperSlide className={styles.introSlide} style={{ backgroundImage: `url(${sample})` }}>
-                <a href="">
-                  <strong>Sandra</strong>
-                  <span> <i className="material-symbols-outlined">location_on</i>  Accra</span>
-                  <sub></sub>
-                </a>
-              </SwiperSlide>
+            <Swiper loop={true} autoplay={{ delay: 3000 }} modules={[Autoplay]} className={styles.introSwiper}>
+              {hostList && hostList.map((host, i) => (
+                <SwiperSlide key={i} className={styles.introSlide} style={{ backgroundImage: `url(${host.profilePic && host.profilePic})` }}>
+                  <Link to={`/viewProfile/${host.id}`}>
+                    <strong>{host.profile[0].username}</strong>
+                    <span> {icon('location_on')}  {host.profile[0].location}</span>
+                    <sub></sub>
+                  </Link>
+                </SwiperSlide>
+              ))}
             </Swiper>
           </section>
           <section className={styles.left}>
-            <strong href="" id="logo">Pick&Hook</strong>
+            <strong id="logo">Pick&Hook</strong>
             <p>Your Top Escort Agency</p>
             <Link to={'/register'}>Create A free Escort Profile Today</Link>
           </section>
           <form>
             <section>
               <div className={styles.inputField}>
-                <span>Region</span>
+                <span>Country</span>
                 <select name="" id="">
-                  <option value="">Accra</option>
-                  <option value="">Kumasi</option>
+                  {countries.map((el, i) => (
+                    <option key={i} value="">{el}</option>
+                  ))}
                 </select>
               </div>
               <div className={styles.inputField}>
@@ -85,35 +110,11 @@ const Home = () => {
             </section>
             <button>
               <strong>Hook</strong>
-              <i class="material-symbols-outlined">phishing</i>
+              {icon('phishing')}
             </button>
           </form>
         </section>
-        <section className={styles.showBox}>
-          {hostList && hostList.map((host, i) => (
-            <Link to={`/viewProfile/${host[0]}`} key={i} className={styles.card}>
-              <legend className="verified">{icon('verified')}</legend>
-              <header>
-                <strong>{host[1].profile && host[1].profile[0].username} <sub></sub></strong>
-                <span>Accra Escort (Independant)</span>
-              </header>
-              <div className={styles.images}>
-                <img src={host[1].cover && host[1].cover} alt="" />
-                <img src={host[1].profilePic && host[1].profilePic} alt="" />
-                {console.log(galleryList[i][0])}
-                {
-                  galleryList[i][0] ?
-                  galleryList[i][0].type == 'image' ?
-                  <img src={galleryList[i][0].media } />:
-                  <video src={galleryList[i][0].media } autoPlay loop muted></video> 
-                  : null
-                }
-              </div>
-              <small className="info">{host[1].profile && host[1].profile[0].bio}</small>
-              <button type="button">View Profile </button>
-            </Link>
-          ))}
-        </section>
+        {hostList && <HostList props={{ list: hostList }} />}
       </section>
     </>
   );

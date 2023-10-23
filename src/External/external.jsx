@@ -54,9 +54,38 @@ export const getTimeSince = (date) => {
   }
 }
 
+export const sortHostByTime = (a,b)=>{
+  const timeA = a.createdOn
+  const timeB = b.createdOn
+  return timeB - timeA
+}
 
-export const sortPostsByTime =(a,b)=>{
+export const sortPostsByTime = (a, b) => {
   const timeA = a.timestamp
   const timeB = b.timestamp
   return timeB - timeA
 }
+
+
+export const countryList = () => {
+  return [
+    "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Austria", "Belarus",
+    "Belgium", "Benin", "Bolivia", "Botswana", "Brazil", "Bulgaria", "Burkina Faso",
+    "Burundi", "Cabo Verde", "Cameroon", "Central African Republic", "Chad", "Chile",
+    "Colombia", "Comoros", "Congo", "Congo", "Cote d'Ivoire", "Croatia", "Cyprus",
+    "Czech Republic", "Denmark", "Djibouti", "Ecuador", "Egypt", "Equatorial Guinea",
+    "Eritrea", "Eswatini", "Ethiopia", "Finland", "France", "Gabon", "Gambia", "Germany",
+    "Ghana", "Greece", "Guinea", "Guinea-Bissau", "Guyana", "Hungary", "Iceland", "Ireland",
+    "Italy", "Kenya", "Kosovo", "Latvia", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+    "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Mali", "Malta", "Mauritania",
+    "Mauritius", "Moldova", "Monaco", "Montenegro", "Morocco", "Mozambique", "Namibia",
+    "Netherlands", "Niger", "Nigeria", "North Macedonia", "Norway", "Paraguay", "Peru",
+    "Poland", "Portugal", "Romania", "Russia", "Rwanda", "San Marino", "Sao Tome and Principe",
+    "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Slovakia", "Slovenia", "Somalia",
+    "South Africa", "South Sudan", "Spain", "Suriname", "Sweden", "Switzerland", "Tanzania",
+    "Togo", "Tunisia", "Uganda", "Ukraine", "United Kingdom", "Uruguay", "Vatican City",
+    "Venezuela", "Zambia", "Zimbabwe"
+  ]
+} 
+
+

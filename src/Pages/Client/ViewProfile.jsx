@@ -2,18 +2,16 @@ import { useEffect, useState } from 'react';
 import Navbar from '../../Components/Navbar';
 import { icon, iconFont, sortPostsByTime } from '../../External/external';
 import styles from '../../Styles/profile.module.css'
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { fireStoreDB } from '../../Firebase/base';
 import { useLoader } from '../../main';
 
 const ViewProfile = () => {
-  const cover = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696773681/_120424467_joy2_a6y2kz.jpg';
-  const face = 'https://res.cloudinary.com/dvnemzw0z/image/upload/v1696775658/profile-1640014292-4a26a41437da03f345e9f0ed8fa0d60e_mu37cj.jpg';
-
+  const navigate = useNavigate();
   const [host, setHost] = useState('');
   const { id } = useParams();
-  const { loader, setLoader } = useLoader();
+  const { setLoader } = useLoader();
   const [gallery, setGallery] = useState([]);
   const [lastPostIndex, setLastPostIndex] = useState(0);
 
@@ -22,10 +20,14 @@ const ViewProfile = () => {
     setLoader(true);
     getDoc(doc(fireStoreDB, 'Hosts/' + id))
       .then((res) => {
+        console.log(res.data().createdOn.sv)
         setHost(res.data())
         setGallery(res.data().posts.sort(sortPostsByTime).slice(0, 5))
         setLastPostIndex(res.data().posts.slice(0, 5).length - 1)
         setLoader(false);
+      })
+      .catch(() => {
+        navigate('/')
       })
   }, [])
 
@@ -44,11 +46,12 @@ const ViewProfile = () => {
           <section className={styles.infoBox}>
             <p>
               <strong>{host.profile[0].username}</strong>
-              <small>{host.profile[0].location}</small>
+              <small>{host.profile[0].location}, {host.country}</small>
               <span>
                 {iconFont('fa-brands fa-instagram', `${host.profile[0].instagram}`)}
                 {iconFont('fa-brands fa-x-twitter', `${host.profile[0].xSpace}`)}
                 {iconFont('fa-brands fa-tiktok', `${host.profile[0].tiktok}`)}
+                {iconFont('fa-solid fa-desktop', `${host.profile[0].site}`)}
               </span>
             </p>
             <p>
@@ -64,8 +67,8 @@ const ViewProfile = () => {
           </section>
           {host.tags.length > 0 &&
             <section className={styles.tagBox}>
-              {host.tags.map((tag) => (
-                <sub>{tag}</sub>
+              {host.tags.map((tag, i) => (
+                <sub key={i}>{tag}</sub>
               ))}
             </section>
           }
@@ -75,14 +78,17 @@ const ViewProfile = () => {
               {gallery.map((el, i) => (
                 i < 4 ?
                   el.type === 'image' ?
-                    <img src={el.media} /> :
-                    <video src={el.media} autoPlay muted loop></video>
+                    <img key={i} src={el.media} /> :
+                    <video key={i} src={el.media} autoPlay muted loop></video>
                   : null
               ))}
               <Link to={`/viewGallery/${id}`}>
                 {gallery.length > 0 &&
                   <>
-                    <img src={gallery[lastPostIndex].media} />
+                    {gallery[lastPostIndex].type === 'image' ?
+                      <img src={gallery[lastPostIndex].media} /> :
+                      <video src={gallery[lastPostIndex].media}></video>
+                    }
                     <p>
                       <span>View More</span>
                       {icon('chevron_right')}

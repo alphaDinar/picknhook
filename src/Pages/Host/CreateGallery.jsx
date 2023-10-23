@@ -114,8 +114,8 @@ const CreateGallery = () => {
             <button type="button" onClick={addPost}>Add Post</button>
           </p>
         </div>
-        {posts.map((el) => (
-          <div className={styles.imgBox}>
+        {posts.map((el,i) => (
+          <div key={i} className={styles.imgBox}>
             <legend>
               {icon('favorite')}
               <sup>{el.likes}</sup>

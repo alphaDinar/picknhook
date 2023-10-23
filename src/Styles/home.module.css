@@ -88,7 +88,7 @@
 .introSlide a strong{
   z-index: 10;
   transition: 0.5s ease;
-  font-size: 2rem;
+  font-size: 1rem;
   color: rgb(122, 120, 120);
 }
 .introSlide a:hover strong{
@@ -118,7 +118,6 @@
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   position: absolute;
-  /* margin: auto; */
   bottom: -10vh;
 }
 .introBox form section{
@@ -156,8 +155,6 @@
 .showBox{
   width: 90%;
   margin: auto;
-  /* padding: 0 5%; */
-  /* border: 2px solid black; */
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;

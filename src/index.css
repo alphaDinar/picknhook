@@ -26,6 +26,20 @@
   /* --theme : pink; */
   --primary: wheat;
 }
+/* 
+body{
+  background: rgb(45, 45, 45);
+} */
+body::-webkit-scrollbar{
+  width: 10px;
+  background: lightgray;
+  /* background: transparent; */
+  border-radius: 10px;
+}
+body::-webkit-scrollbar-thumb{
+  background: var(--theme);
+  border-radius: 10px;
+}
 
 .loader {
   position: fixed;
