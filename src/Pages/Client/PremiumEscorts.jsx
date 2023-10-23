@@ -16,7 +16,7 @@ const PremiumEscorts = () => {
     const premiumQuery = query(collection(fireStoreDB, 'Hosts/'), where('class', '==', 'premium'));
     getDocs(premiumQuery)
       .then((res) => {
-        const hostListTemp = res.docs.map((el) => el.data());
+        const hostListTemp = (res.docs.map((el) => el.data()));
         setHostList(hostListTemp)
         // setCountries(countryList())
         setLoader(false)
@@ -28,7 +28,7 @@ const PremiumEscorts = () => {
     <>
       <Navbar props={{ type: 'max' }} />
       <section className={styles.wrapper}>
-        <strong style={pageHeaderStyle}>Premium Ads. <sub></sub></strong>
+        <strong style={pageHeaderStyle}>Premium Escorts <sub></sub></strong>
         {hostList && <HostList props={{ list: hostList }} />}
       </section>
     </>

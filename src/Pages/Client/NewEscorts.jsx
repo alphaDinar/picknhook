@@ -6,6 +6,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useLoader } from "../../main";
 import HostList from "../../Components/HostList";
 import { pageHeaderStyle } from "../../External/styles";
+import { sortHostByTime } from "../../External/external";
 
 const NewEscorts = () => {
   const [hostList, setHostList] = useState('');
@@ -15,7 +16,7 @@ const NewEscorts = () => {
     setLoader(true)
     getDocs(collection(fireStoreDB, 'Hosts/'))
       .then((res) => {
-        const hostListTemp = res.docs.map((el) => el.data());
+        const hostListTemp = res.docs.map((el) => el.data()).sort(sortHostByTime);
         console.log(hostListTemp)
         setHostList(hostListTemp)
         // setCountries(countryList())

@@ -2,9 +2,6 @@
   width: 80%;
   margin: 3vh 10%;
 }
-
-
-
 .mainNav{
   display: flex;
   align-items: center;
@@ -25,6 +22,9 @@
   justify-content: center;
   gap: 1.5rem;
 }
+.mainNav nav button{
+  display: none;
+}
 .mainNav #register_a{
   border: 2px dotted darkgray;
   border-radius: 20px;
@@ -36,6 +36,27 @@
   border: 2px solid transparent;
   background: var(--theme);
   color: white;
+}
+
+.premiumContentBox{
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 1vh;
+  align-items: center;
+  border: 2px solid var(--theme);
+}
+.premiumInfo{
+  padding: 20px;
+  display: flex;
+  width: calc(100% - 40px);
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.premiumInfo p{
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 @media all and (max-width:900px){
@@ -54,7 +75,38 @@
     margin: 3vh 5%;
   }
   .mainNav nav{
+    position: fixed;
+    background: var(--theme);
+    left: 0;
+    top: -160px;
+    width: 100%;
     flex-direction: column;
-    gap: 0.05rem;
+    gap: 0.5rem;
+    padding: 20px 0;
+    height: 120px;
+    z-index: 1000;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    transition: 0.4s ease;
+  }
+  .mainNav nav.change{
+    top: 0;
+  }
+  .mainNav nav a{
+    color: white;
+    font-size: 0.9rem;
+  }
+  .mainNav nav button{
+    display: flex;
+    position: absolute;
+    top: 100%;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    background: var(--theme);
+    color: white;
+    border-radius: 0 0 3px 0;
   }
 }

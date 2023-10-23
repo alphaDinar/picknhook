@@ -93,11 +93,12 @@ const Home = () => {
                 </select>
               </div>
               <div className={styles.inputField}>
-                <span>Club</span>
+                <span>Body Type</span>
                 <select>
                   <option value="">All</option>
-                  <option value="">Independants</option>
-                  <option value="">Agencies</option>
+                  <option value="">Slim</option>
+                  <option value="">Slim thick</option>
+                  <option value="">Thick</option>
                 </select>
               </div>
               <div className={styles.inputField}>

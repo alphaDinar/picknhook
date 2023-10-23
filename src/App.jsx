@@ -11,6 +11,7 @@ import ViewGallery from './Pages/Client/ViewGallery'
 import CreateGallery from './Pages/Host/CreateGallery'
 import NewEscorts from './Pages/Client/NewEscorts'
 import PremiumEscorts from './Pages/Client/PremiumEscorts'
+import PremiumAccount from './Pages/Client/PremiumAccount'
 
 function App() {
 
@@ -20,8 +21,9 @@ function App() {
       <section className='page'>
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='premiumAccount' element={<PremiumAccount/>} />
           <Route path='newEscorts' element={<NewEscorts/>}/>
-          <Route path='/premiumEscorts' element={<PremiumEscorts/>} />
+          <Route path='premiumEscorts' element={<PremiumEscorts/>} />
           <Route path='register' element={<Register />} />
           <Route path='login' element={<Login />} />
           <Route path='createProfile' element={<CreateProfile />} />
